@@ -18,6 +18,7 @@
 package nl.basjes.parse.useragent.analyze;
 
 import nl.basjes.parse.useragent.UserAgent;
+import nl.basjes.parse.useragent.parse.MatcherTree;
 import nl.basjes.parse.useragent.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class Matcher implements Serializable {
     }
 
     // Package private constructor for testing purposes only
-    Matcher(Analyzer analyzer) {
+    public Matcher(Analyzer analyzer) { // FIXME: NOT IN FINAL VERSION: Making this public is bad
         this.analyzer = analyzer;
         this.fixedStringActions = new ArrayList<>();
         this.variableActions = new ArrayList<>();
@@ -78,6 +79,10 @@ public class Matcher implements Serializable {
 
     public Map<String, Set<String>> getLookupSets() {
         return analyzer.getLookupSets();
+    }
+
+    public MatcherTree getPathTreeRoot() {
+        return analyzer.getMatcherTreeRoot();
     }
 
     static class ConfigLine {
@@ -100,8 +105,6 @@ public class Matcher implements Serializable {
     }
 
     public Matcher(Analyzer analyzer,
-                   Map<String, Map<String, String>> lookups,
-                   Map<String, Set<String>> lookupSets,
                    List<String> wantedFieldNames,
                    MappingNode matcherConfig,
                    String filename) throws UselessMatcherException {
@@ -309,12 +312,12 @@ public class Matcher implements Serializable {
         analyzer.lookingForRange(treeName, range);
     }
 
-    public void informMeAbout(MatcherAction matcherAction, String keyPattern) {
-        analyzer.informMeAbout(matcherAction, keyPattern);
+    public void informMeAbout(MatcherAction matcherAction, MatcherTree matcherTree) {
+        analyzer.informMeAbout(matcherAction, matcherTree);
     }
 
-    public void informMeAboutPrefix(MatcherAction matcherAction, String keyPattern, String prefix) {
-        analyzer.informMeAboutPrefix(matcherAction, keyPattern, prefix);
+    public void informMeAboutPrefix(MatcherAction matcherAction, MatcherTree matcherTree, String prefix) {
+        analyzer.informMeAboutPrefix(matcherAction, matcherTree, prefix);
     }
 
     private final Map<String, Set<MatcherAction>> informMatcherActionsAboutVariables = new HashMap<>(8);
