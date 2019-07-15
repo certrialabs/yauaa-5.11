@@ -49,4 +49,10 @@ public class CalculateDeviceName implements FieldCalculator {
                 deviceName.getConfidence());
         }
     }
+
+    @Override
+    public String toString() {
+        return "Clean " + DEVICE_NAME;
+    }
+
 }

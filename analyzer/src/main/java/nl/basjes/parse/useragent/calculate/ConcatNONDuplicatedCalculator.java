@@ -92,4 +92,10 @@ public class ConcatNONDuplicatedCalculator implements FieldCalculator {
         }
 
     }
+
+    @Override
+    public String toString() {
+        return "Concat: " + firstName+ " + " + secondName+ " --> " + targetName;
+    }
+
 }

@@ -98,4 +98,11 @@ public class CalculateDeviceBrand implements FieldCalculator {
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Clean " + DEVICE_BRAND;
+    }
+
+
 }
