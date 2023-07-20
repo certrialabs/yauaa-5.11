@@ -87,6 +87,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.18.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -145,6 +151,53 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>inject-problematic-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>org.springframework</pattern>
+                  <shadedPattern>nl.basjes.shaded.org.springframework</shadedPattern>
+                  <includes>
+                    <include>org.springframework.**</include>
+                  </includes>
+                </relocation>
+                <relocation>
+                  <pattern>org.antlr</pattern>
+                  <shadedPattern>nl.basjes.shaded.org.antlr</shadedPattern>
+                  <includes>
+                    <include>org.antlr.**</include>
+                  </includes>
+                </relocation>
+                <relocation>
+                  <pattern>org.yaml.snakeyaml</pattern>
+                  <shadedPattern>nl.basjes.shaded.org.yaml.snakeyaml</shadedPattern>
+                  <includes>
+                    <include>org.yaml.snakeyaml.**</include>
+                  </includes>
+                </relocation>
+                <relocation>
+                  <pattern>com.google</pattern>
+                  <shadedPattern>nl.basjes.shaded.com.google</shadedPattern>
+                  <includes>
+                    <include>com.google.**</include>
+                  </includes>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+
+        </executions>
       </plugin>
 
       <plugin>
