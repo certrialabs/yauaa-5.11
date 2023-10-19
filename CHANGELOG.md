@@ -4,18 +4,46 @@ This is intended as an overview of the major changes
 NEXT RELEASE
 ===
 - New/improved detections:
+  - Detect more of the Yahoo Japan bots
+  - MediaTek and EXYNOS CPUs
+  - Uphold javascript sdk
+  - Shopify Mobile
+  - Apple iOS version in edge cases
+- Updated UDF dependencies
+    - Trino 427 changed their API
+
+v7.22.0
+===
+- New/improved detections:
+  - Detect robots: Internet-Measurement, BuildWith, ThinkChaos, Turnitin, Naver Yeti, Swagger Validator
+  - Handle version bug fixed in Opera 98.
+  - Report all Opera variants as distinct browsers because they all have unrelated version numbers.
+  - Handle special case of anonymization
+
+v7.21.0
+===
+- Analyzer:
+  - Handle the < and > brackets better.
+- New/improved detections:
   - Report Samsung DEX (Desktop Experience) as Tablet
   - New DeviceClass: "Smart Display"
-  - Detect more Robots: Feerder.co, Buck, Rome, python-requests
+  - Detect more Robots: Feerder.co, Buck, Rome, python-requests, GoogleAssociationService
   - Initial handling of Robots and Hackers using client hints.
   - Detect Amazon Echo Show better (a "Smart Display")
   - Detect Bitwarden Mobile app
-  - Detect more Federated Social Servers and Robots
+  - Detect more Federated Social Clients, Servers and Robots (Mastodon and such)
   - Detect brand: Cloud Mobile Stratus C5
+  - Detect Power PC Little Endian CPU
+  - Detect Qihoo 360 Safe Browser
   - Handle some really bad WeChat useragents.
+  - Handle the Despegar App
+  - Detect Opera GX
+  - Detect Fuchsia OS
+  - Better Brand extraction
+  - Detect several situations of UserAgent changing plugins
+  - Better classify normal Desktop imitating GoogleBot
 - Updated UDF dependencies
   - Trino 422 (it needs 421 or newer!)
-
 
 v7.20.0
 ===

@@ -108,6 +108,12 @@ config:
 
 - matcher:
     variable:
+    - 'Darwin                              :agent.product.comments.entry="Darwin"'
+    extract:
+    - 'DeviceBrand                         :      1 :"Apple"'
+
+- matcher:
+    variable:
       - 'Darwin                              :agent.product.name="Darwin"^'
       - 'AppleTag                            :@Darwin.(2)comments.(1)entry?AppleDeviceClass'
     extract:
@@ -5809,3 +5815,251 @@ config:
       AgentVersionMajor                    : '2023'
       AgentNameVersion                     : 'Bitwarden Mobile 2023.5.0'
       AgentNameVersionMajor                : 'Bitwarden Mobile 2023'
+
+# https://github.com/uphold/uphold-sdk-javascript
+- matcher:
+    require:
+    - 'agent.(1)product.(1)name="uphold-sdk-javascript"'
+    extract:
+    - 'AgentName               :        10 :agent.(2)product.(1)name'
+    - 'AgentVersion            :        10 :agent.(2)product.(1)version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)name="uphold-sdk-javascript"'
+    - 'agent.(2)product.(1)name[2]="Android"'
+    extract:
+    - 'DeviceName              :        11 : agent.(1)product.(1)comments.(1)entry.text'
+    - 'OperatingSystemClass    :        11 :"Mobile"'
+    - 'OperatingSystemName     :        11 :"Android"'
+    - 'OperatingSystemVersion  :        11 :agent.(1)product.(1)comments.(2)entry.text'
+    - 'AgentName               :        11 :agent.(2)product.(1)name[1]'
+    - 'AgentVersion            :        11 :agent.(2)product.(1)version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)name="uphold-sdk-javascript"'
+    - 'agent.(2)product.(1)name[2]="iOS"'
+    variable:
+    - 'AppleTag: agent.(1)product.(1)comments.(1)entry.text'
+    extract:
+    - 'DeviceClass             :        11 : LookUp[AppleDeviceClass;@AppleTag]'
+    - 'DeviceBrand             :        11 : "Apple"'
+    - 'DeviceName              :        11 : LookUp[AppleDeviceName;@AppleTag]'
+    - 'DeviceVersion           :        11 : LookUp[AppleDeviceVersion;@AppleTag]'
+    - 'OperatingSystemClass    :        11 :"Mobile"'
+    - 'OperatingSystemName     :        11 :"iOS"'
+    - 'OperatingSystemVersion  :        11 :agent.(1)product.(1)comments.(2)entry.text'
+    - 'AgentName               :        11 :agent.(2)product.(1)name[1]'
+    - 'AgentVersion            :        11 :agent.(2)product.(1)version'
+
+- test:
+    input:
+      User-Agent                           : 'uphold-sdk-javascript/v2.4.1 (taro; 12; en_US) Wallet Android/4.79.1'
+    expected:
+      DeviceClass                          : 'Mobile'
+      DeviceName                           : 'Taro'
+      DeviceBrand                          : 'Unknown'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Android'
+      OperatingSystemVersion               : '12'
+      OperatingSystemVersionMajor          : '12'
+      OperatingSystemNameVersion           : 'Android 12'
+      OperatingSystemNameVersionMajor      : 'Android 12'
+      LayoutEngineClass                    : 'Unknown'
+      LayoutEngineName                     : 'Unknown'
+      LayoutEngineVersion                  : '??'
+      LayoutEngineVersionMajor             : '??'
+      LayoutEngineNameVersion              : 'Unknown ??'
+      LayoutEngineNameVersionMajor         : 'Unknown ??'
+      AgentClass                           : 'Special'
+      AgentName                            : 'Wallet'
+      AgentVersion                         : '4.79.1'
+      AgentVersionMajor                    : '4'
+      AgentNameVersion                     : 'Wallet 4.79.1'
+      AgentNameVersionMajor                : 'Wallet 4'
+      AgentLanguage                        : 'English (United States)'
+      AgentLanguageCode                    : 'en-us'
+
+# MT6737 is really a MediaTek CPU ... not a Phone
+- test:
+    input:
+      User-Agent                           : 'uphold-sdk-javascript/v2.4.1 (MT6737; 9; es_US) Wallet Android/5.1.1'
+    expected:
+      DeviceClass                          : 'Mobile'
+      DeviceName                           : 'MediaTek MT6737'
+      DeviceBrand                          : 'MediaTek'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Android'
+      OperatingSystemVersion               : '9'
+      OperatingSystemVersionMajor          : '9'
+      OperatingSystemNameVersion           : 'Android 9'
+      OperatingSystemNameVersionMajor      : 'Android 9'
+      LayoutEngineClass                    : 'Unknown'
+      LayoutEngineName                     : 'Unknown'
+      LayoutEngineVersion                  : '??'
+      LayoutEngineVersionMajor             : '??'
+      LayoutEngineNameVersion              : 'Unknown ??'
+      LayoutEngineNameVersionMajor         : 'Unknown ??'
+      AgentClass                           : 'Special'
+      AgentName                            : 'Wallet'
+      AgentVersion                         : '5.1.1'
+      AgentVersionMajor                    : '5'
+      AgentNameVersion                     : 'Wallet 5.1.1'
+      AgentNameVersionMajor                : 'Wallet 5'
+      AgentLanguage                        : 'Spanish (United States)'
+      AgentLanguageCode                    : 'es-us'
+
+# EXYNOS9820 is really a Samsung CPU ... not a Phone
+- test:
+    input:
+      User-Agent                           : 'uphold-sdk-javascript/v2.4.1 (exynos9820; 12; hu) Wallet Android/5.9.1'
+    expected:
+      DeviceClass                          : 'Mobile'
+      DeviceName                           : 'Samsung EXYNOS9820'
+      DeviceBrand                          : 'Samsung'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Android'
+      OperatingSystemVersion               : '12'
+      OperatingSystemVersionMajor          : '12'
+      OperatingSystemNameVersion           : 'Android 12'
+      OperatingSystemNameVersionMajor      : 'Android 12'
+      LayoutEngineClass                    : 'Unknown'
+      LayoutEngineName                     : 'Unknown'
+      LayoutEngineVersion                  : '??'
+      LayoutEngineVersionMajor             : '??'
+      LayoutEngineNameVersion              : 'Unknown ??'
+      LayoutEngineNameVersionMajor         : 'Unknown ??'
+      AgentClass                           : 'Special'
+      AgentName                            : 'Wallet'
+      AgentVersion                         : '5.9.1'
+      AgentVersionMajor                    : '5'
+      AgentNameVersion                     : 'Wallet 5.9.1'
+      AgentNameVersionMajor                : 'Wallet 5'
+      AgentLanguage                        : 'Hungarian'
+      AgentLanguageCode                    : 'hu'
+
+- test:
+    input:
+      User-Agent                           : 'uphold-sdk-javascript/v2.4.1 (iPhone13,4; 16.1.2; en) Wallet iOS/5.6.0'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceVersion                        : 'iPhone 12 Pro Max'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '16.1.2'
+      OperatingSystemVersionMajor          : '16'
+      OperatingSystemNameVersion           : 'iOS 16.1.2'
+      OperatingSystemNameVersionMajor      : 'iOS 16'
+      LayoutEngineClass                    : 'Unknown'
+      LayoutEngineName                     : 'Unknown'
+      LayoutEngineVersion                  : '??'
+      LayoutEngineVersionMajor             : '??'
+      LayoutEngineNameVersion              : 'Unknown ??'
+      LayoutEngineNameVersionMajor         : 'Unknown ??'
+      AgentClass                           : 'Special'
+      AgentName                            : 'Wallet'
+      AgentVersion                         : '5.6.0'
+      AgentVersionMajor                    : '5'
+      AgentNameVersion                     : 'Wallet 5.6.0'
+      AgentNameVersionMajor                : 'Wallet 5'
+      AgentLanguage                        : 'English'
+      AgentLanguageCode                    : 'en'
+
+# Some kind of 'spec': https://github.com/Shopify/browser_sniffer/blob/master/test/shopify_agents_test.rb
+- matcher:
+    require:
+      - 'agent.(1)product.(1)name="Shopify Mobile"'
+      - 'agent.(1)product.(1)version="Android"'
+    extract:
+    - 'DeviceClass                         :      101 :"Mobile"'
+    - 'DeviceBrand                         :      101 : agent.(1)product.(1)comments.(1)entry.product.name[1]="on"@[2-]'
+    - 'DeviceName                          :      101 : agent.(1)product.(1)comments.(1)entry.product.name[1]="on"^.version'
+    - 'OperatingSystemClass                :      101 :"Mobile"'
+    - 'OperatingSystemName                 :      101 :"Android"'
+    - 'OperatingSystemVersion              :      101 :LookUp[AndroidAPIToVersionMap;agent.(1)product.(1)comments.(1)entry.product.name="with API"^.version;"<<<null>>>"]'
+    - 'OperatingSystemVersionBuild         :      101 :"<<<null>>>"'
+    - 'AgentClass                          :     101 : "Mobile App"'
+    - 'AgentName                           :     101 :"Shopify Mobile"'
+    - 'AgentVersion                        :     101 :agent.(1)product.(2)version'
+    - 'AgentBuild                          :     101 : agent.(1)product.(1)comments.(1)entry.(1)product.(1)name="Build"^.version'
+
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)name="Shopify Mobile"'
+    - 'agent.(1)product.(1)version="iOS"'
+    variable:
+    - 'AppleTag: agent.(1)product.(1)comments.(1)entry.(1)product.(1)name'
+    extract:
+    - 'DeviceClass                         :       11 : LookUp[AppleDeviceClass;@AppleTag]'
+    - 'DeviceBrand                         :       11 : "Apple"'
+    - 'DeviceName                          :       11 : LookUp[AppleDeviceName;@AppleTag]'
+    - 'DeviceVersion                       :       11 : LookUp[AppleDeviceVersion;@AppleTag]'
+    - 'OperatingSystemClass                :      101 :"Mobile"'
+    - 'OperatingSystemName                 :      101 :"iOS"'
+    - 'OperatingSystemVersion              :      101 :@AppleTag^.(2)version'
+    - 'OperatingSystemVersionBuild         :      101 :"<<<null>>>"'
+    - 'AgentClass                          :     101 : "Mobile App"'
+    - 'AgentName                           :     101 :"Shopify Mobile"'
+    - 'AgentVersion                        :     101 :agent.(1)product.(2)version'
+    - 'AgentBuild                          :     101 : agent.product.name="Build"^.version'
+
+
+- test:
+    input:
+      User-Agent                           : 'Shopify Mobile/Android/9.129.0 (Build 33470 with API 31 on OPPO CPH2223)'
+    expected:
+      DeviceClass                          : 'Mobile'
+      DeviceName                           : 'Oppo CPH2223'
+      DeviceBrand                          : 'Oppo'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Android'
+      OperatingSystemVersion               : '12'
+      OperatingSystemVersionMajor          : '12'
+      OperatingSystemNameVersion           : 'Android 12'
+      OperatingSystemNameVersionMajor      : 'Android 12'
+      LayoutEngineClass                    : 'Unknown'
+      LayoutEngineName                     : 'Unknown'
+      LayoutEngineVersion                  : '??'
+      LayoutEngineVersionMajor             : '??'
+      LayoutEngineNameVersion              : 'Unknown ??'
+      LayoutEngineNameVersionMajor         : 'Unknown ??'
+      AgentClass                           : 'Mobile App'
+      AgentName                            : 'Shopify Mobile'
+      AgentVersion                         : '9.129.0'
+      AgentVersionMajor                    : '9'
+      AgentNameVersion                     : 'Shopify Mobile 9.129.0'
+      AgentNameVersionMajor                : 'Shopify Mobile 9'
+      AgentBuild                           : '33470'
+
+
+- test:
+    input:
+      User-Agent                           : 'Shopify Mobile/iOS/9.124.2 (iPhone15,3/com.jadedpixel.shopify/16.6.0) - Build 1184'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceVersion                        : 'iPhone 14 Pro Max'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '16.6.0'
+      OperatingSystemVersionMajor          : '16'
+      OperatingSystemNameVersion           : 'iOS 16.6.0'
+      OperatingSystemNameVersionMajor      : 'iOS 16'
+      LayoutEngineClass                    : 'Unknown'
+      LayoutEngineName                     : 'Unknown'
+      LayoutEngineVersion                  : '??'
+      LayoutEngineVersionMajor             : '??'
+      LayoutEngineNameVersion              : 'Unknown ??'
+      LayoutEngineNameVersionMajor         : 'Unknown ??'
+      AgentClass                           : 'Mobile App'
+      AgentName                            : 'Shopify Mobile'
+      AgentVersion                         : '9.124.2'
+      AgentVersionMajor                    : '9'
+      AgentNameVersion                     : 'Shopify Mobile 9.124.2'
+      AgentNameVersionMajor                : 'Shopify Mobile 9'
+      AgentBuild                           : '1184'

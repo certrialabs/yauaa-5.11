@@ -17,11 +17,25 @@ These are only the highlights, the full changelog can be found [here](https://gi
 
 ### NEXT RELEASE
 - New/improved detections:
+    - Detect more of the Yahoo Japan bots
+- Updated UDF dependencies
+    - Trino 427 changed their API
+
+### Version v7.22.0
+- New/improved detections:
+    - Handle version bug fixed in Opera 98.
+    - Report all Opera variants as distinct browsers because they all have unrelated version numbers.
+
+### Version v7.21.0
+- New/improved detections:
     - New DeviceClass: "Smart Display"
     - Report Samsung DEX (Desktop Experience) as Tablet
     - Detect Amazon Echo Show better (a "Smart Display")
     - Detect Bitwarden Mobile app
     - Detect more Federated Social Servers and Robots
+    - Detect Opera GX
+    - Detect Fuchsia OS
+    - Detect several situations of UserAgent changing plugins
 - Updated UDF dependencies
     - Trino 422 (it needs 421 or newer!)
 

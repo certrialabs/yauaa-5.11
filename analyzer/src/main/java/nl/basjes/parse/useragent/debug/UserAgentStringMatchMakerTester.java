@@ -221,7 +221,7 @@ public class UserAgentStringMatchMakerTester extends AbstractUserAgentAnalyzer {
                 agent.setDebug(newVerbose);
                 init = options.contains("init");
             }
-            if (expected == null || expected.size() == 0) {
+            if (expected == null || expected.isEmpty()) {
                 init = true;
                 expected = null;
             }
@@ -564,7 +564,7 @@ public class UserAgentStringMatchMakerTester extends AbstractUserAgentAnalyzer {
     // ===============================================================================================================
 
 
-    private static class MatcherImpact {
+    private static final class MatcherImpact {
         String name;
         long neededInputs;
         long tests;

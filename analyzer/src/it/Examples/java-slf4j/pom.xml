@@ -28,7 +28,7 @@
   <packaging>jar</packaging>
 
   <artifactId>yauaa-example-java-slf4j</artifactId>
-  <name>Yauaa : Examples : Java (SLF4J)</name>
+  <name>Yauaa : Examples : Java (SLF4J 1.x)</name>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j2.version}</version>
+      <version>${slf4j1.version}</version>
     </dependency>
 
   </dependencies>

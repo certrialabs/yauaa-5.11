@@ -4480,8 +4480,8 @@ config:
       user_agent_string: 'Mozilla/5.0 (Linux; Android 2.3.4; MT11i Build/4.0.2.A.0.62) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.123 Mobile Safari/537.22 OPR/14.0.1025.52315'
     expected:
       DeviceClass                          : 'Phone'
-      DeviceName                           : 'MT11I'
-      DeviceBrand                          : 'Unknown'
+      DeviceName                           : 'SonyEricsson MT11I'
+      DeviceBrand                          : 'SonyEricsson'
       OperatingSystemClass                 : 'Mobile'
       OperatingSystemName                  : 'Android'
       OperatingSystemVersion               : '2.3.4'
@@ -4496,11 +4496,11 @@ config:
       LayoutEngineNameVersion              : 'AppleWebKit 537.22'
       LayoutEngineNameVersionMajor         : 'AppleWebKit 537'
       AgentClass                           : 'Browser'
-      AgentName                            : 'Opera'
+      AgentName                            : 'Opera Mobile'
       AgentVersion                         : '14.0.1025.52315'
       AgentVersionMajor                    : '14'
-      AgentNameVersion                     : 'Opera 14.0.1025.52315'
-      AgentNameVersionMajor                : 'Opera 14'
+      AgentNameVersion                     : 'Opera Mobile 14.0.1025.52315'
+      AgentNameVersionMajor                : 'Opera Mobile 14'
 
 
 - test:
@@ -4524,11 +4524,11 @@ config:
       LayoutEngineNameVersion              : 'Blink 41.0'
       LayoutEngineNameVersionMajor         : 'Blink 41'
       AgentClass                           : 'Browser'
-      AgentName                            : 'Opera'
+      AgentName                            : 'Opera Mobile'
       AgentVersion                         : '28.0.1764.90386'
       AgentVersionMajor                    : '28'
-      AgentNameVersion                     : 'Opera 28.0.1764.90386'
-      AgentNameVersionMajor                : 'Opera 28'
+      AgentNameVersion                     : 'Opera Mobile 28.0.1764.90386'
+      AgentNameVersionMajor                : 'Opera Mobile 28'
 
 
 - test:

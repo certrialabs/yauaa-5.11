@@ -32,29 +32,36 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import static java.lang.Boolean.TRUE;
+import static nl.basjes.parse.useragent.UserAgent.AGENT_CLASS;
 import static nl.basjes.parse.useragent.UserAgent.AGENT_NAME;
 import static nl.basjes.parse.useragent.UserAgent.AGENT_NAME_VERSION;
 import static nl.basjes.parse.useragent.UserAgent.AGENT_NAME_VERSION_MAJOR;
 import static nl.basjes.parse.useragent.UserAgent.AGENT_VERSION;
 import static nl.basjes.parse.useragent.UserAgent.AGENT_VERSION_MAJOR;
 import static nl.basjes.parse.useragent.UserAgent.DEVICE_BRAND;
+import static nl.basjes.parse.useragent.UserAgent.DEVICE_CLASS;
 import static nl.basjes.parse.useragent.UserAgent.DEVICE_CPU;
 import static nl.basjes.parse.useragent.UserAgent.DEVICE_CPU_BITS;
+import static nl.basjes.parse.useragent.UserAgent.DEVICE_FIRMWARE_VERSION;
 import static nl.basjes.parse.useragent.UserAgent.DEVICE_NAME;
+import static nl.basjes.parse.useragent.UserAgent.DEVICE_VERSION;
+import static nl.basjes.parse.useragent.UserAgent.LAYOUT_ENGINE_CLASS;
 import static nl.basjes.parse.useragent.UserAgent.LAYOUT_ENGINE_NAME;
 import static nl.basjes.parse.useragent.UserAgent.LAYOUT_ENGINE_NAME_VERSION;
 import static nl.basjes.parse.useragent.UserAgent.LAYOUT_ENGINE_NAME_VERSION_MAJOR;
 import static nl.basjes.parse.useragent.UserAgent.LAYOUT_ENGINE_VERSION;
 import static nl.basjes.parse.useragent.UserAgent.LAYOUT_ENGINE_VERSION_MAJOR;
 import static nl.basjes.parse.useragent.UserAgent.NULL_VALUE;
+import static nl.basjes.parse.useragent.UserAgent.OPERATING_SYSTEM_CLASS;
 import static nl.basjes.parse.useragent.UserAgent.OPERATING_SYSTEM_NAME;
 import static nl.basjes.parse.useragent.UserAgent.OPERATING_SYSTEM_NAME_VERSION;
 import static nl.basjes.parse.useragent.UserAgent.OPERATING_SYSTEM_NAME_VERSION_MAJOR;
@@ -71,6 +78,7 @@ import static nl.basjes.parse.useragent.UserAgent.UACLIENT_HINT_PLATFORM;
 import static nl.basjes.parse.useragent.UserAgent.UACLIENT_HINT_PLATFORM_VERSION;
 import static nl.basjes.parse.useragent.UserAgent.UACLIENT_HINT_WOW_64;
 import static nl.basjes.parse.useragent.UserAgent.UNKNOWN_VALUE;
+import static nl.basjes.parse.useragent.classify.DeviceClass.DESKTOP;
 import static nl.basjes.parse.useragent.classify.DeviceClass.MOBILE;
 import static nl.basjes.parse.useragent.classify.DeviceClass.PHONE;
 import static nl.basjes.parse.useragent.classify.DeviceClass.TABLET;
@@ -105,7 +113,7 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
     // If major is 6 and minor is 1 (i.e., Windows 7), return "0.1".
 
     @AllArgsConstructor
-    private static class OSFields implements Serializable {
+    private static final class OSFields implements Serializable {
         @Getter String name;              // Windows NT
         @Getter String version;           // 8.1
         @Getter String versionMajor;      // 8
@@ -146,10 +154,10 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
         setCHString(userAgent,            UACLIENT_HINT_PLATFORM_VERSION,   clientHints.getPlatformVersion());
         setCHBoolean(userAgent,           UACLIENT_HINT_WOW_64,             clientHints.getWow64());
 
+        improveOperatingSystem(userAgent, clientHints);
         improveMobileDeviceClass(userAgent, clientHints);
         improveDeviceBrandName(userAgent, clientHints);
         improveDeviceCPU(userAgent, clientHints);
-        improveOperatingSystem(userAgent, clientHints);
         improveLayoutEngineAndAgentInfo(userAgent, clientHints);
         return userAgent;
     }
@@ -198,8 +206,11 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
     private static final List<String> GENERIC_DEVICE_NAMES = Arrays.asList(
         UNKNOWN_VALUE,
         "Android Mobile",
+        "Fuchsia Mobile",
+        "Fuchsia Device",
         "iOS Device",
-        "Desktop"
+        "Desktop",
+        "Linux Desktop"
     );
 
     public void improveDeviceBrandName(MutableUserAgent userAgent, ClientHints clientHints) {
@@ -244,6 +255,7 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
         }
     }
 
+
     public void improveOperatingSystem(MutableUserAgent userAgent, ClientHints clientHints) {
         // Improve the OS info.
         // https://wicg.github.io/ua-client-hints/#sec-ch-ua-platform
@@ -262,6 +274,59 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
         if (platform != null && platformVersion != null && !platform.trim().isEmpty() && !platformVersion.trim().isEmpty()) {
 //            MutableAgentField osName    = (MutableAgentField) userAgent.get(UserAgent.OPERATING_SYSTEM_NAME);
             String majorVersion = VersionSplitter.getInstance().getSingleSplit(platformVersion, 1);
+
+            switch (platform) {
+                case "macOS":
+                case "Mac OS X":
+                    overrideValue(userAgent.get(DEVICE_BRAND), "Apple");
+                    overrideValue(userAgent.get(DEVICE_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(OPERATING_SYSTEM_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(LAYOUT_ENGINE_CLASS), "Browser");
+                    overrideValue(userAgent.get(AGENT_CLASS), "Browser");
+                    break;
+
+                case "iOS":
+                    overrideValue(userAgent.get(DEVICE_CLASS), MOBILE.getValue());
+                    overrideValue(userAgent.get(DEVICE_BRAND), "Apple");
+                    break;
+
+                case "Android":
+                case "Fuchsia":
+                    overrideValue(userAgent.get(DEVICE_CLASS), MOBILE.getValue());
+                    overrideValue(userAgent.get(DEVICE_BRAND), NULL_VALUE);
+                    break;
+
+                case "Linux":
+                    overrideValue(userAgent.get(DEVICE_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(DEVICE_NAME), "Linux Desktop");
+                    overrideValue(userAgent.get(DEVICE_BRAND), NULL_VALUE);
+                    overrideValue(userAgent.get(DEVICE_VERSION), NULL_VALUE);
+                    overrideValue(userAgent.get(DEVICE_FIRMWARE_VERSION), NULL_VALUE);
+                    overrideValue(userAgent.get(OPERATING_SYSTEM_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(LAYOUT_ENGINE_CLASS), "Browser");
+                    overrideValue(userAgent.get(AGENT_CLASS), "Browser");
+                    break;
+
+                case "Chrome OS":
+                case "Windows":
+                    overrideValue(userAgent.get(DEVICE_NAME), DESKTOP.getValue());
+                    overrideValue(userAgent.get(DEVICE_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(DEVICE_BRAND), NULL_VALUE);
+                    overrideValue(userAgent.get(LAYOUT_ENGINE_CLASS), "Browser");
+                    overrideValue(userAgent.get(OPERATING_SYSTEM_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(AGENT_CLASS), "Browser");
+                    break;
+
+                case "Unknown":
+                default:
+                    overrideValue(userAgent.get(DEVICE_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(DEVICE_BRAND), NULL_VALUE);
+                    overrideValue(userAgent.get(LAYOUT_ENGINE_CLASS), "Browser");
+                    overrideValue(userAgent.get(OPERATING_SYSTEM_CLASS), DESKTOP.getValue());
+                    overrideValue(userAgent.get(AGENT_CLASS), "Browser");
+                    break;
+            }
+
             switch (platform) {
                 case "macOS":
                 case "Mac OS X":
@@ -274,6 +339,7 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
                     break;
 
                 case "Android":
+                case "Fuchsia":
                 case "Chrome OS":
                 case "iOS":
                 case "Linux":
@@ -287,6 +353,8 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
                 case "Windows":
                     OSFields betterOsVersion = WINDOWS_VERSION_MAPPING.getLongestMatch(platformVersion);
                     if (betterOsVersion != null) {
+                        overrideValue(userAgent.get(DEVICE_CLASS),                        DESKTOP.getValue());
+                        overrideValue(userAgent.get(DEVICE_BRAND),                        NULL_VALUE);
                         overrideValue(userAgent.get(OPERATING_SYSTEM_NAME),               betterOsVersion.getName());
                         overrideValue(userAgent.get(OPERATING_SYSTEM_VERSION),            betterOsVersion.getVersion());
                         overrideValue(userAgent.get(OPERATING_SYSTEM_VERSION_MAJOR),      betterOsVersion.getVersionMajor());
@@ -308,20 +376,38 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
     }
 
     private boolean newVersionIsBetter(MutableAgentField currentVersion, String version) {
-        boolean currentVersionHasMinor = currentVersion.getValue().contains(".");
-        boolean versionHasMinor = version.contains(".");
+        boolean currentVersionHasMinor = currentVersion.getValue().indexOf('.') >= 0;
+        boolean versionHasMinor = version.indexOf('.') >= 0;
         return currentVersion.isDefaultValue() ||
             (!versionHasMinor && !currentVersionHasMinor) ||
             (versionHasMinor);
     }
 
+    private static final Pattern DOT_SPLITTER = Pattern.compile("\\.");
+
+    // There are some well known browsers that include their "Parent" browser also.
+    // We remove those parents to allow better reporting
+    private static final Map<String, String> BROWSER_ANCESTORS = new TreeMap<>();
+
+    static {
+        // <Wanted> --> <Unwanted Ancestor>
+        BROWSER_ANCESTORS.put("Chrome", "Chromium");
+        BROWSER_ANCESTORS.put("OperaMobile", "Opera");
+    }
+
+    // There are some browsers where we want to map the name to a more readable version
+    private static final Map<String, String> BROWSER_RENAME = new TreeMap<>();
+
+    static {
+        BROWSER_RENAME.put("OperaMobile", "Opera Mobile");
+        BROWSER_RENAME.put("Microsoft Edge", "Edge");
+    }
+
     public void improveLayoutEngineAndAgentInfo(MutableUserAgent userAgent, ClientHints clientHints) {
         // Improve the Agent info.
-        boolean usingFullVersions = true;
         List<Brand> versionList = clientHints.getFullVersionList();
         if (versionList == null) {
             versionList = clientHints.getBrands();
-            usingFullVersions = false;
         }
 
         if (versionList == null) {
@@ -331,11 +417,17 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
         final Map<String, Brand> versionMap = new TreeMap<>();
         versionList.forEach(v -> versionMap.put(v.getName(), v));
 
+        BROWSER_ANCESTORS.forEach((wanted, unwanted) -> {
+            if (versionMap.containsKey(wanted)) {
+                versionMap.remove(unwanted);
+            }
+        });
+
         // ========================
         Brand chromium = versionMap.get("Chromium");
         if (chromium != null) {
             String version = chromium.getVersion();
-            String[] versionSplits = version.split("\\.");
+            String[] versionSplits = DOT_SPLITTER.split(version);
             String majorVersion = versionSplits[0];
 
             // Work around the major in minor hack/feature of Chrome ~v99
@@ -386,8 +478,8 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
 
                 return;
             }
+            versionMap.remove("Chromium");
         }
-        versionMap.remove("Chromium");
 
         // ========================
         Brand chrome = versionMap.get("Chrome");
@@ -399,7 +491,7 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
                 // So we have "Chrome" and nothing else
                 MutableAgentField currentVersion = userAgent.get(AGENT_VERSION);
                 String version = chrome.getVersion();
-                String[] versionSplits = version.split("\\.");
+                String[] versionSplits = DOT_SPLITTER.split(version);
                 String majorVersion = versionSplits[0];
 
                 // Work around the major in minor hack/feature of Chrome ~v99
@@ -418,59 +510,115 @@ public class ClientHintsAnalyzer extends ClientHintsHeadersParser {
                     return;
                 }
             }
+            versionMap.remove("Chrome");
+            versionMap.remove("Google Chrome");
         }
-        versionMap.remove("Chrome");
-        versionMap.remove("Google Chrome");
         // ========================
 
-        // If anything remains then (we think) THAT is the truth...
-        for (Map.Entry<String, Brand> brandEntry : versionMap.entrySet()) {
-            Brand brand = brandEntry.getValue();
-            String rawBrandName = brand.getName();
-            String agentName = rawBrandName;
-
-            // Sanitize the common yet unwanted names
-            switch (rawBrandName) {
-                case "Microsoft Edge":
-                    agentName = "Edge";
-                    break;
-                default:
-            }
-
-            MutableAgentField agentNameField = userAgent.get(AGENT_NAME);
-            MutableAgentField agentVersionField = userAgent.get(AGENT_VERSION);
-
-            switch (agentName) {
-                case "Opera":
-                    // There is a bug in Opera which puts the wrong version in the client hints.
-                    break;
-
-                default:
-                    // Only do this if the existing in only a major version, and we have received full versions
-                    if (agentVersionField.getValue().contains(".") && !usingFullVersions){
-                        continue;
-                    }
-                    // In all other cases the client hint is expected to be "more" true.
-                    String version = brand.getVersion();
-                    String majorVersion = version.split("\\.")[0];
-                    overrideValue(agentNameField, agentName);
-                    overrideValue(userAgent.get(AGENT_VERSION), version);
-                    overrideValue(userAgent.get(AGENT_NAME_VERSION), agentName + " " + version);
-                    overrideValue(userAgent.get(AGENT_VERSION_MAJOR), majorVersion);
-                    overrideValue(userAgent.get(AGENT_NAME_VERSION_MAJOR), agentName + " " + majorVersion);
-                    break;
+        // There was a bug in Opera which puts the wrong version in the client hints.
+        // This has been fixed in the first release of Opera 98
+        // https://blogs.opera.com/desktop/changelog-for-98/
+        // So up until Opera 97 / Opera Mobile the version information was buggy.
+        MutableAgentField currentAgent = userAgent.get(AGENT_NAME);
+        if ("Opera".equals(currentAgent.getValue())) {
+            String currentVersion = userAgent.get(AGENT_VERSION).getValue();
+            // We only consider the Client Hints if the version new enough.
+            String currentMajorVersion = DOT_SPLITTER.split(currentVersion, 2)[0];
+            try {
+                int currentMajorVersionInt = Integer.parseInt(currentMajorVersion);
+                if (currentMajorVersionInt < 98) {
+                    versionMap.remove("Opera");
+                }
+            } catch (NumberFormatException nfe) {
+                // Safety net; Ignore this problem if it happens.
             }
         }
+
+        // If anything remains then (we think) THAT is the truth...
+        Map<String, Brand> sortedBrands = new TreeMap<>();
+
+        // If we have more than 1 left we sort them by how detailed the version info is.
+        int originalPosition = 0;
+        for (Brand brand : versionMap.values()) {
+            originalPosition++;
+            String version = brand.getVersion();
+            boolean versionFieldValueHasDot = version.indexOf('.') >= 0;
+            boolean versionIsMajorVersionOnly = !versionFieldValueHasDot;
+            if (versionFieldValueHasDot) {
+                versionIsMajorVersionOnly = version.endsWith(".0.0.0");
+            }
+            // The 0 (with detailed version) is sorted before the 1 (only major version) in the TreeMap (which sorts by key)
+            sortedBrands.put((versionIsMajorVersionOnly ?"1":"0") + "_"+ originalPosition + "_" + brand.getName(), brand);
+        }
+
+        MutableAgentField agentNameField = userAgent.get(AGENT_NAME);
+        MutableAgentField agentVersionField = userAgent.get(AGENT_VERSION);
+        String versionFieldValue = agentVersionField.getValue();
+
+        boolean versionFieldValueHasDot = versionFieldValue.indexOf('.') >= 0;
+        boolean versionIsMajorVersionOnly = !versionFieldValueHasDot;
+        if (versionFieldValueHasDot) {
+            versionIsMajorVersionOnly = versionFieldValue.endsWith(".0.0.0");
+        }
+
+        // We just pick the first one that remains.
+        Optional<Map.Entry<String, Brand>> firstBrand = sortedBrands.entrySet().stream().findFirst();
+        if (!firstBrand.isPresent()) {
+            return;
+        }
+
+        Map.Entry<String, Brand> brandEntry = firstBrand.get();
+        Brand brand = brandEntry.getValue();
+        String agentName = brand.getName();
+
+        // Sanitize the common yet unwanted names
+        String renamed = BROWSER_RENAME.get(agentName);
+        if (renamed != null) {
+            agentName = renamed;
+        }
+
+        // We only update the version if we have a better version number.
+        // We always update the AgentName because I think the Client hints are always "better"...
+        String newVersion = brand.getVersion();
+        String newMajorVersion = DOT_SPLITTER.split(newVersion, 2)[0];
+
+        // The values we are going to set at the end.
+        String setVersion = versionFieldValue;
+        String setMajorVersion = DOT_SPLITTER.split(versionFieldValue, 2)[0];
+
+        // If the original is a major version only then the new one is better
+        if (versionIsMajorVersionOnly) {
+            setVersion = newVersion;
+            setMajorVersion = newMajorVersion;
+        } else {
+            // If current version is a full version but there is a mismatch in the major we pick the
+            // ClientHints version anyway.
+            if (!setMajorVersion.equals(newMajorVersion)) {
+                setVersion = newVersion;
+                setMajorVersion = newMajorVersion;
+            }
+        }
+
+        overrideValue(agentNameField, agentName);
+        overrideValue(userAgent.get(AGENT_VERSION), setVersion);
+        overrideValue(userAgent.get(AGENT_NAME_VERSION), agentName + " " + setVersion);
+        overrideValue(userAgent.get(AGENT_VERSION_MAJOR), setMajorVersion);
+        overrideValue(userAgent.get(AGENT_NAME_VERSION_MAJOR), agentName + " " + setMajorVersion);
+    }
+
+    private static Set<String> setOfStrings(String... values) {
+        return new HashSet<>(Arrays.asList(values));
     }
 
     // In the above calculations there are fields that require additional input fields.
     private static final Map<String, Set<String>> EXTRA_FIELD_DEPENDENCIES = new TreeMap<>();
     static {
-        EXTRA_FIELD_DEPENDENCIES.put(AGENT_NAME,               Collections.singleton(AGENT_VERSION));
-        EXTRA_FIELD_DEPENDENCIES.put(AGENT_VERSION,            Collections.singleton(AGENT_NAME));
-        EXTRA_FIELD_DEPENDENCIES.put(AGENT_NAME_VERSION,       Collections.singleton(AGENT_NAME));
-        EXTRA_FIELD_DEPENDENCIES.put(AGENT_VERSION_MAJOR,      Collections.singleton(AGENT_NAME));
-        EXTRA_FIELD_DEPENDENCIES.put(AGENT_NAME_VERSION_MAJOR, Collections.singleton(AGENT_NAME));
+        EXTRA_FIELD_DEPENDENCIES.put(AGENT_CLASS,              setOfStrings(AGENT_NAME, AGENT_VERSION));
+        EXTRA_FIELD_DEPENDENCIES.put(AGENT_NAME,               setOfStrings(AGENT_VERSION));
+        EXTRA_FIELD_DEPENDENCIES.put(AGENT_VERSION,            setOfStrings(AGENT_NAME));
+        EXTRA_FIELD_DEPENDENCIES.put(AGENT_NAME_VERSION,       setOfStrings(AGENT_NAME));
+        EXTRA_FIELD_DEPENDENCIES.put(AGENT_VERSION_MAJOR,      setOfStrings(AGENT_NAME));
+        EXTRA_FIELD_DEPENDENCIES.put(AGENT_NAME_VERSION_MAJOR, setOfStrings(AGENT_NAME));
     }
 
     public static Set<String> extraDependenciesNeededByClientCalculator(@Nonnull Set<String> wantedFieldNames) {

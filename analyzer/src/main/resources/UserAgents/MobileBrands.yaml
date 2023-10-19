@@ -50,6 +50,7 @@ config:
       # Special case; Microsoft is Hardware and Software --> This "hardware brand" also matches "software"
 #      "Microsoft"               : "Microsoft"
       "Meizu"                   : "Meizu"
+      "MediaTek"                : "MediaTek"
       "Nokia"                   : "Nokia"
       "OnePlus"                 : "OnePlus"
       "Oppo"                    : "Oppo"
@@ -177,7 +178,7 @@ config:
       "Nexus"                   : "Google"
       "Pixelbook"               : "Google"
 # Pixel is a special case that conflicts with the Pixel/ tag used by Tencent browsers
-#      "Pixel"                   : "Google"
+      "Pixel "                  : "Google"
       "Google Pixel"            : "Google"
       "Android SDK"             : "Google"
       "SDK"                     : "Google"
@@ -500,7 +501,28 @@ config:
       "Arc 9"                   : "Kobo"
 
       "ThinkPad"                : "Lenovo"
+      "ThinkStation"            : "Lenovo"
       "Yoga"                    : "Lenovo"
+      "TB1"                     : "Lenovo"
+      "TB2"                     : "Lenovo"
+      "TB3"                     : "Lenovo"
+      "TB4"                     : "Lenovo"
+      "TB5"                     : "Lenovo"
+      "YB1-"                    : "Lenovo"
+      "YB-"                     : "Lenovo"
+      "YT3-"                    : "Lenovo"
+      "YT-"                     : "Lenovo"
+      "TB-7"                    : "Lenovo"
+      "TB-8"                    : "Lenovo"
+      "TB-J"                    : "Lenovo"
+      "TB-Q"                    : "Lenovo"
+      "TB-X"                    : "Lenovo"
+      "A7-"                     : "Lenovo"
+      "CD-"                     : "Lenovo"
+      "PB-"                     : "Lenovo"
+      "PB1-"                    : "Lenovo"
+      "PB2-"                    : "Lenovo"
+      "TAB 2 "                   : "Lenovo"
 
       # This is a robot
       "YaK"                     : "Linkfluence"
@@ -531,6 +553,9 @@ config:
       "E10"                     : "Medion"
       "P10"                     : "Medion"
       "X10"                     : "Medion"
+
+      "MT6"                     : "MediaTek"
+      "MT7"                     : "MediaTek"
 
       "MZ-"                     : "Meizu"
       "M3"                      : "Meizu"
@@ -632,6 +657,9 @@ config:
       "Family Hub"              : "Samsung"
       "C2S"                     : "Samsung"
 
+      # EXYNOS is really a Samsung CPU ... not a Phone Brand
+      "EXYNOS"                  : "Samsung"
+
       "SM7"                     : "Smartisan"
       "SM8"                     : "Smartisan"
       "SM9"                     : "Smartisan"
@@ -685,7 +713,10 @@ config:
       "Xperia"                  : "Sony"
       "XQ-"                     : "Sony"
       "HQ-"                     : "Sony"
-      "EBRD"                    : "Sony" # EBookb ReaDer
+      "EBRD"                    : "Sony" # EBook ReaDer
+
+      "MT1"                     : "SonyEricsson"
+
       "H60 "                    : "Symphony"
 
       "X98"                     : "Teclast"

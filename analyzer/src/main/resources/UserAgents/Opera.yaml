@@ -15,7 +15,6 @@
 # limitations under the License.
 #
 
-
 config:
 
 - matcher:
@@ -48,6 +47,99 @@ config:
 #    - 'AgentClass                 : 2020:"Browser"'
 #    - 'AgentName                  : 2020:"Opera"'
 #    - 'AgentVersion               : 2020:agent.product.name="Opr"^.version'
+
+# From 2011: https://dev.opera.com/articles/opera-mini-request-headers/
+# User-Agent: Opera/9.80 (Android; Opera Mini/8.0.1807/36.1609; U; en) Presto/2.12.423 Version/12.16
+# User-Agent: Opera/9.80 ($PLATFORM_NAME$; $PRODUCT_NAME$/$CLIENT_VERSION$/ $SERVER_VERSION$;U; $LOCALE$) $PRESTO_VERSION$ $EQUIV_DESKTOP_VERSION$
+
+- matcher:
+    extract:
+    - 'AgentClass                          :     2012 :"Browser"'
+    - 'AgentName                           :     2012 :"Opera Mini"'
+    - 'AgentVersion                        :     2012 :agent.(1-4)product.comments.entry.(1-2)product.name="Opera Mini"^.version'
+    - 'DeviceClass                         :        1 :"Mobile"'
+
+- matcher:
+    extract:
+    - 'AgentClass                          :     2012 :"Browser"'
+    - 'AgentName                           :     2012 :"Opera Mini"'
+    - 'AgentVersion                        :     2012 :agent.(1)product.name="Opera Mini"^.version'
+    - 'DeviceClass                         :        1 :"Mobile"'
+
+- matcher:
+    require:
+    - 'agent.(1-4)product.comments.entry.(1-4)product.name="Opera Tablet"'
+    extract:
+    - 'AgentClass                          :     2012 :"Browser"'
+    - 'AgentName                           :     2012 :"Opera Tablet"'
+    - 'AgentVersion                        :     2012 :agent.product.name="Version"^.version'
+
+
+# Opera Mini on Android is presented as a "Webview". Perhaps it is really a webview but for reporting not desired.
+- matcher:
+    variable:
+    - 'OperaVersion:agent.product.(1)name="OPR"^.version'
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)text="wv"'
+    - 'agent.(1)product.(1)comments.entry.(1)product.(1)name[1]="Android"'
+    extract:
+    - 'AgentClass                   : 12100 : "Browser"'
+    - 'AgentName                    : 12100 : "Opera Mini"'
+    - 'AgentVersion                 : 12100 : @OperaVersion'
+    - 'WebviewAppName               : 10012 : "<<<null>>>"'
+    - 'WebviewAppVersion            : 10012 : "<<<null>>>"'
+
+
+# Opera Mobile on Android is presented as "Opera".
+- matcher:
+    variable:
+    - 'OperaVersion:agent.product.(1)name="OPR"^.version'
+    require:
+    - 'IsNull[agent.(1)product.(1)comments.entry.(1)text="wv"]'
+    - 'agent.(1)product.(1)comments.entry.(1)product.(1)name[1]="Android"'
+    extract:
+    - 'AgentClass                   : 12100 : "Browser"'
+    - 'AgentName                    : 12100 : "Opera Mobile"'
+    - 'AgentVersion                 : 12100 : @OperaVersion'
+    - 'WebviewAppName               : 10012 : "<<<null>>>"'
+    - 'WebviewAppVersion            : 10012 : "<<<null>>>"'
+
+
+# Opera on iOS
+- matcher:
+    extract:
+    - 'AgentClass                          :     2014 :"Browser"'
+    - 'AgentName                           :     2014 :"Opera"'
+    - 'AgentVersion                        :     2014 :agent.product.name="OPiOS"^.version'
+
+
+# Opera Touch.
+- matcher:
+    variable:
+    - 'OperaVersion:agent.product.(1)name="OPT"^.version'
+    extract:
+    - 'AgentClass                   : 12100 : "Browser"'
+    - 'AgentName                    : 12100 : "Opera Touch"'
+    - 'AgentVersion                 : 12100 : @OperaVersion'
+    - 'WebviewAppName               : 10012 : "<<<null>>>"'
+    - 'WebviewAppVersion            : 10012 : "<<<null>>>"'
+
+
+# Opera GX
+- matcher:
+    extract:
+    - 'AgentClass                          :     3014 :"Browser"'
+    - 'AgentName                           :     3014 :"Opera GX"'
+    - 'AgentVersion                        :     3014 :agent.product.name="OPRGX"^.version'
+
+
+# Opera GX on Android
+- matcher:
+    extract:
+    - 'AgentClass                          :     3014 :"Browser"'
+    - 'AgentName                           :     3014 :"Opera GX"'
+    - 'AgentVersion                        :     3014 :agent.product.name="OPX"^.version'
+
 
 - test:
     input:
@@ -167,19 +259,6 @@ config:
       AgentNameVersion                     : 'Opera 12.16'
       AgentNameVersionMajor                : 'Opera 12'
 
-- matcher:
-    extract:
-    - 'AgentClass                          :     2012 :"Browser"'
-    - 'AgentName                           :     2012 :"Opera Mini"'
-    - 'AgentVersion                        :     2012 :agent.(1-4)product.comments.entry.(1-2)product.name="Opera Mini"^.version'
-    - 'DeviceClass                         :        1 :"Mobile"'
-
-- matcher:
-    extract:
-    - 'AgentClass                          :     2012 :"Browser"'
-    - 'AgentName                           :     2012 :"Opera Mini"'
-    - 'AgentVersion                        :     2012 :agent.(1)product.name="Opera Mini"^.version'
-    - 'DeviceClass                         :        1 :"Mobile"'
 
 - test:
     input:
@@ -210,13 +289,6 @@ config:
       AgentLanguageCode                    : 'nl'
       AgentSecurity                        : 'Strong security'
 
-- matcher:
-    require:
-    - 'agent.(1-4)product.comments.entry.(1-4)product.name="Opera Tablet"'
-    extract:
-    - 'AgentClass                          :     2012 :"Browser"'
-    - 'AgentName                           :     2012 :"Opera Tablet"'
-    - 'AgentVersion                        :     2012 :agent.product.name="Version"^.version'
 
 - test:
     input:
@@ -274,13 +346,6 @@ config:
       AgentNameVersion                     : 'Opera Tablet 12.10'
       AgentNameVersionMajor                : 'Opera Tablet 12'
 
-
-  # Opera on iOS
-- matcher:
-    extract:
-    - 'AgentClass                          :     2014 :"Browser"'
-    - 'AgentName                           :     2014 :"Opera"'
-    - 'AgentVersion                        :     2014 :agent.product.name="OPiOS"^.version'
 
 - test:
     input:
@@ -446,17 +511,12 @@ config:
       LayoutEngineVersionMajor             : '66'
       LayoutEngineNameVersion              : 'Blink 66.0'
       LayoutEngineNameVersionMajor         : 'Blink 66'
-      AgentClass                           : 'Browser Webview'
-      AgentName                            : 'Chrome Webview'
-      AgentVersion                         : '66.0.3359.126'
-      AgentVersionMajor                    : '66'
-      AgentNameVersion                     : 'Chrome Webview 66.0.3359.126'
-      AgentNameVersionMajor                : 'Chrome Webview 66'
-      WebviewAppName                       : 'Opera Touch'
-      WebviewAppVersion                    : '1.0.9'
-      WebviewAppVersionMajor               : '1'
-      WebviewAppNameVersion                : 'Opera Touch 1.0.9'
-      WebviewAppNameVersionMajor           : 'Opera Touch 1'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Opera Touch'
+      AgentVersion                         : '1.0.9'
+      AgentVersionMajor                    : '1'
+      AgentNameVersion                     : 'Opera Touch 1.0.9'
+      AgentNameVersionMajor                : 'Opera Touch 1'
 
 - test:
     input:
@@ -847,7 +907,7 @@ config:
       LayoutEngineVersionMajor             : '605'
       LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
       LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
-      AgentClass                           : 'Mobile App'
+      AgentClass                           : 'Browser'
       AgentName                            : 'Opera Touch'
       AgentVersion                         : '3.2.17'
       AgentVersionMajor                    : '3'
@@ -1197,11 +1257,12 @@ config:
       LayoutEngineNameVersion                    : 'Blink 112.0'
       LayoutEngineNameVersionMajor               : 'Blink 112'
       AgentClass                                 : 'Browser'
-      AgentName                                  : 'OperaMobile'
+      AgentName                                  : 'Opera Mobile'
       AgentVersion                               : '75.4.3978.72990'
       AgentVersionMajor                          : '75'
-      AgentNameVersion                           : 'OperaMobile 75.4.3978.72990'
-      AgentNameVersionMajor                      : 'OperaMobile 75'
+      AgentNameVersion                           : 'Opera Mobile 75.4.3978.72990'
+      AgentNameVersionMajor                      : 'Opera Mobile 75'
+
       UAClientHintBrands_0_Brand                 : 'OperaMobile'
       UAClientHintBrands_0_Version               : '75'
       UAClientHintBrands_1_Brand                 : 'Chromium'
@@ -1219,4 +1280,806 @@ config:
       UAClientHintModel                          : 'Nokia 7.2'
       UAClientHintPlatform                       : 'Android'
       UAClientHintPlatformVersion                : '11'
+      UAClientHintWow64                          : 'false'
+
+
+# ================================================
+# Opera GX
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Windows 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 OPRGX/104.0.4480.100'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Windows'
+      OperatingSystemVersion                     : '??'
+      OperatingSystemVersionMajor                : '??'
+      OperatingSystemNameVersion                 : 'Windows ??'
+      OperatingSystemNameVersionMajor            : 'Windows ??'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '104.0'
+      LayoutEngineVersionMajor                   : '104'
+      LayoutEngineNameVersion                    : 'Blink 104.0'
+      LayoutEngineNameVersionMajor               : 'Blink 104'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '104.0.4480.100'
+      AgentVersionMajor                          : '104'
+      AgentNameVersion                           : 'Opera GX 104.0.4480.100'
+      AgentNameVersionMajor                      : 'Opera GX 104'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4719.89 Safari/537.36 OPRGX/97.0.4719.89 OPR/97.0.4719.89'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpuBits                              : '32'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Windows NT'
+      OperatingSystemVersion                     : '10.0'
+      OperatingSystemVersionMajor                : '10'
+      OperatingSystemNameVersion                 : 'Windows 10.0'
+      OperatingSystemNameVersionMajor            : 'Windows 10'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '97.0'
+      LayoutEngineVersionMajor                   : '97'
+      LayoutEngineNameVersion                    : 'Blink 97.0'
+      LayoutEngineNameVersionMajor               : 'Blink 97'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '97.0.4719.89'
+      AgentVersionMajor                          : '97'
+      AgentNameVersion                           : 'Opera GX 97.0.4719.89'
+      AgentNameVersionMajor                      : 'Opera GX 97'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36 OPR/60.0.3255.50962 OPRGX/60.0.3255.50962 (Edition Campaign E7)'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Windows NT'
+      OperatingSystemVersion                     : '7'
+      OperatingSystemVersionMajor                : '7'
+      OperatingSystemNameVersion                 : 'Windows 7'
+      OperatingSystemNameVersionMajor            : 'Windows 7'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '73.0'
+      LayoutEngineVersionMajor                   : '73'
+      LayoutEngineNameVersion                    : 'Blink 73.0'
+      LayoutEngineNameVersionMajor               : 'Blink 73'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '60.0.3255.50962'
+      AgentVersionMajor                          : '60'
+      AgentNameVersion                           : 'Opera GX 60.0.3255.50962'
+      AgentNameVersionMajor                      : 'Opera GX 60'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0'
+      Sec-Ch-Ua                                  : '"Not=A?Brand";v="8", "Chromium";v="110", "Opera GX";v="96"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Platform                         : '"Windows"'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Windows NT'
+      OperatingSystemVersion                     : '??'
+      OperatingSystemVersionMajor                : '??'
+      OperatingSystemNameVersion                 : 'Windows NT ??'
+      OperatingSystemNameVersionMajor            : 'Windows NT ??'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '110'
+      LayoutEngineVersionMajor                   : '110'
+      LayoutEngineNameVersion                    : 'Blink 110'
+      LayoutEngineNameVersionMajor               : 'Blink 110'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '96'
+      AgentVersionMajor                          : '96'
+      AgentNameVersion                           : 'Opera GX 96'
+      AgentNameVersionMajor                      : 'Opera GX 96'
+
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '110'
+      UAClientHintBrands_1_Brand                 : 'Opera GX'
+      UAClientHintBrands_1_Version               : '96'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'Windows'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0'
+      Sec-Ch-Ua                                  : '"Not=A?Brand";v="8", "Chromium";v="110", "Opera GX";v="96"'
+      Sec-Ch-Ua-Arch                             : '"x86"'
+      Sec-Ch-Ua-Bitness                          : '"64"'
+      Sec-Ch-Ua-Full-Version                     : '"96.0.4693.117"'
+      Sec-Ch-Ua-Full-Version-List                : '"Not=A?Brand";v="8.0.0.0", "Chromium";v="110.0.5481.192", "Opera GX";v="96.0.4693.117"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Model                            : ''
+      Sec-Ch-Ua-Platform                         : '"Windows"'
+      Sec-Ch-Ua-Platform-Version                 : '"10.0.0"'
+      Sec-Ch-Ua-Wow64                            : '?0'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Windows NT'
+      OperatingSystemVersion                     : '10'
+      OperatingSystemVersionMajor                : '10'
+      OperatingSystemNameVersion                 : 'Windows 10'
+      OperatingSystemNameVersionMajor            : 'Windows 10'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '110.0'
+      LayoutEngineVersionMajor                   : '110'
+      LayoutEngineNameVersion                    : 'Blink 110.0'
+      LayoutEngineNameVersionMajor               : 'Blink 110'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '96.0.4693.117'
+      AgentVersionMajor                          : '96'
+      AgentNameVersion                           : 'Opera GX 96.0.4693.117'
+      AgentNameVersionMajor                      : 'Opera GX 96'
+
+      UAClientHintArchitecture                   : 'x86'
+      UAClientHintBitness                        : '64'
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '110'
+      UAClientHintBrands_1_Brand                 : 'Opera GX'
+      UAClientHintBrands_1_Version               : '96'
+      UAClientHintFullVersion                    : '96.0.4693.117'
+      UAClientHintFullVersionList_0_Brand        : 'Chromium'
+      UAClientHintFullVersionList_0_Version      : '110.0.5481.192'
+      UAClientHintFullVersionList_1_Brand        : 'Opera GX'
+      UAClientHintFullVersionList_1_Version      : '96.0.4693.117'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'Windows'
+      UAClientHintPlatformVersion                : '10.0.0'
+      UAClientHintWow64                          : 'false'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0 (Edition std-1)'
+      Sec-Ch-Ua                                  : '"Not=A?Brand";v="8", "Chromium";v="110", "Opera GX";v="96"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Platform                         : '"macOS"'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Apple Macintosh'
+      DeviceBrand                                : 'Apple'
+      DeviceCpu                                  : 'Intel'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Mac OS'
+      OperatingSystemVersion                     : '>=10.15.7'
+      OperatingSystemVersionMajor                : '>=10.15'
+      OperatingSystemNameVersion                 : 'Mac OS >=10.15.7'
+      OperatingSystemNameVersionMajor            : 'Mac OS >=10.15'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '110'
+      LayoutEngineVersionMajor                   : '110'
+      LayoutEngineNameVersion                    : 'Blink 110'
+      LayoutEngineNameVersionMajor               : 'Blink 110'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '96'
+      AgentVersionMajor                          : '96'
+      AgentNameVersion                           : 'Opera GX 96'
+      AgentNameVersionMajor                      : 'Opera GX 96'
+
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '110'
+      UAClientHintBrands_1_Brand                 : 'Opera GX'
+      UAClientHintBrands_1_Version               : '96'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'macOS'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Linux; Android 11; Nokia 7.2 Build/RKQ1.210607.001) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.196 Mobile Safari/537.36 OPX/2.0'
+    expected:
+      DeviceClass                                : 'Phone'
+      DeviceName                                 : 'Nokia 7.2'
+      DeviceBrand                                : 'Nokia'
+      OperatingSystemClass                       : 'Mobile'
+      OperatingSystemName                        : 'Android'
+      OperatingSystemVersion                     : '11'
+      OperatingSystemVersionMajor                : '11'
+      OperatingSystemNameVersion                 : 'Android 11'
+      OperatingSystemNameVersionMajor            : 'Android 11'
+      OperatingSystemVersionBuild                : 'RKQ1.210607.001'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '114.0'
+      LayoutEngineVersionMajor                   : '114'
+      LayoutEngineNameVersion                    : 'Blink 114.0'
+      LayoutEngineNameVersionMajor               : 'Blink 114'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '2.0'
+      AgentVersionMajor                          : '2'
+      AgentNameVersion                           : 'Opera GX 2.0'
+      AgentNameVersionMajor                      : 'Opera GX 2'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0'
+      Sec-Ch-Ua                                  : '"Not.A/Brand";v="8", "Chromium";v="114", "Opera GX";v="100"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Platform                         : '"Windows"'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Windows NT'
+      OperatingSystemVersion                     : '??'
+      OperatingSystemVersionMajor                : '??'
+      OperatingSystemNameVersion                 : 'Windows NT ??'
+      OperatingSystemNameVersionMajor            : 'Windows NT ??'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '114'
+      LayoutEngineVersionMajor                   : '114'
+      LayoutEngineNameVersion                    : 'Blink 114'
+      LayoutEngineNameVersionMajor               : 'Blink 114'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '100'
+      AgentVersionMajor                          : '100'
+      AgentNameVersion                           : 'Opera GX 100'
+      AgentNameVersionMajor                      : 'Opera GX 100'
+
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '114'
+      UAClientHintBrands_1_Brand                 : 'Opera GX'
+      UAClientHintBrands_1_Version               : '100'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'Windows'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0'
+      Sec-Ch-Ua                                  : '"Not.A/Brand";v="8", "Chromium";v="114", "Opera GX";v="100"'
+      Sec-Ch-Ua-Arch                             : '"x86"'
+      Sec-Ch-Ua-Bitness                          : '"64"'
+      Sec-Ch-Ua-Full-Version                     : '"100.0.4815.82"'
+      Sec-Ch-Ua-Full-Version-List                : '"Not.A/Brand";v="8.0.0.0", "Chromium";v="114.0.5735.199", "Opera GX";v="100.0.4815.82"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Model                            : '""'
+      Sec-Ch-Ua-Platform                         : '"Windows"'
+      Sec-Ch-Ua-Platform-Version                 : '"10.0.0"'
+      Sec-Ch-Ua-Wow64                            : '?0'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Windows NT'
+      OperatingSystemVersion                     : '10'
+      OperatingSystemVersionMajor                : '10'
+      OperatingSystemNameVersion                 : 'Windows 10'
+      OperatingSystemNameVersionMajor            : 'Windows 10'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '114.0'
+      LayoutEngineVersionMajor                   : '114'
+      LayoutEngineNameVersion                    : 'Blink 114.0'
+      LayoutEngineNameVersionMajor               : 'Blink 114'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '100.0.4815.82'
+      AgentVersionMajor                          : '100'
+      AgentNameVersion                           : 'Opera GX 100.0.4815.82'
+      AgentNameVersionMajor                      : 'Opera GX 100'
+
+      UAClientHintArchitecture                   : 'x86'
+      UAClientHintBitness                        : '64'
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '114'
+      UAClientHintBrands_1_Brand                 : 'Opera GX'
+      UAClientHintBrands_1_Version               : '100'
+      UAClientHintFullVersion                    : '100.0.4815.82'
+      UAClientHintFullVersionList_0_Brand        : 'Chromium'
+      UAClientHintFullVersionList_0_Version      : '114.0.5735.199'
+      UAClientHintFullVersionList_1_Brand        : 'Opera GX'
+      UAClientHintFullVersionList_1_Version      : '100.0.4815.82'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'Windows'
+      UAClientHintPlatformVersion                : '10.0.0'
+      UAClientHintWow64                          : 'false'
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Linux; Android 13; SM-S901B Build/TP1A.220624.014) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.196 Mobile Safari/537.36 OPX/2.0'
+    expected:
+      DeviceClass                                : 'Phone'
+      DeviceName                                 : 'Samsung SM-S901B'
+      DeviceBrand                                : 'Samsung'
+      OperatingSystemClass                       : 'Mobile'
+      OperatingSystemName                        : 'Android'
+      OperatingSystemVersion                     : '13'
+      OperatingSystemVersionMajor                : '13'
+      OperatingSystemNameVersion                 : 'Android 13'
+      OperatingSystemNameVersionMajor            : 'Android 13'
+      OperatingSystemVersionBuild                : 'TP1A.220624.014'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '114.0'
+      LayoutEngineVersionMajor                   : '114'
+      LayoutEngineNameVersion                    : 'Blink 114.0'
+      LayoutEngineNameVersionMajor               : 'Blink 114'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '2.0'
+      AgentVersionMajor                          : '2'
+      AgentNameVersion                           : 'Opera GX 2.0'
+      AgentNameVersionMajor                      : 'Opera GX 2'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1 OPX/1.8.0'
+    expected:
+      DeviceClass                                : 'Phone'
+      DeviceName                                 : 'Apple iPhone'
+      DeviceBrand                                : 'Apple'
+      DeviceFirmwareVersion                      : '15E148'
+      DeviceVersion                              : 'iPhone'
+      OperatingSystemClass                       : 'Mobile'
+      OperatingSystemName                        : 'iOS'
+      OperatingSystemVersion                     : '16.0.2'
+      OperatingSystemVersionMajor                : '16'
+      OperatingSystemNameVersion                 : 'iOS 16.0.2'
+      OperatingSystemNameVersionMajor            : 'iOS 16'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'AppleWebKit'
+      LayoutEngineVersion                        : '605.1.15'
+      LayoutEngineVersionMajor                   : '605'
+      LayoutEngineNameVersion                    : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor               : 'AppleWebKit 605'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera GX'
+      AgentVersion                               : '1.8.0'
+      AgentVersionMajor                          : '1'
+      AgentNameVersion                           : 'Opera GX 1.8.0'
+      AgentNameVersionMajor                      : 'Opera GX 1'
+
+
+# Opera with an incorrect version in th Client hints (bug fixed in Opera 98)
+# Fixed in Opera 98.0.4725.0 – 2023-03-06
+# https://blogs.opera.com/desktop/changelog-for-98/
+#  DNA-105555 Opera version is wrong in Client Hints
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 OPR/94.0.0.0'
+      Sec-Ch-Ua                                  : '"Chromium";v="108", "Opera";v="94", "Not)A;Brand";v="99"'
+      Sec-Ch-Ua-Arch                             : '"x86"'
+      Sec-Ch-Ua-Bitness                          : '"64"'
+      Sec-Ch-Ua-Full-Version                     : '"108.0.5359.125"'
+      Sec-Ch-Ua-Full-Version-List                : '"Not?A_Brand";v="8.0.0.0", "Chromium";v="108.0.5359.125", "Opera";v="108.0.5359.125"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Model                            : ''
+      Sec-Ch-Ua-Platform                         : '"Linux"'
+      Sec-Ch-Ua-Platform-Version                 : '"5.15.0"'
+      Sec-Ch-Ua-Wow64                            : '?0'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Linux Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Linux'
+      OperatingSystemVersion                     : '5.15.0'
+      OperatingSystemVersionMajor                : '5'
+      OperatingSystemNameVersion                 : 'Linux 5.15.0'
+      OperatingSystemNameVersionMajor            : 'Linux 5'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '108.0'
+      LayoutEngineVersionMajor                   : '108'
+      LayoutEngineNameVersion                    : 'Blink 108.0'
+      LayoutEngineNameVersionMajor               : 'Blink 108'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera'
+      AgentVersion                               : '94.0.0.0'
+      AgentVersionMajor                          : '94'
+      AgentNameVersion                           : 'Opera 94.0.0.0'
+      AgentNameVersionMajor                      : 'Opera 94'
+
+      UAClientHintArchitecture                   : 'x86'
+      UAClientHintBitness                        : '64'
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '108'
+      UAClientHintBrands_1_Brand                 : 'Opera'
+      UAClientHintBrands_1_Version               : '94'
+      UAClientHintFullVersion                    : '108.0.5359.125'
+      UAClientHintFullVersionList_0_Brand        : 'Chromium'
+      UAClientHintFullVersionList_0_Version      : '108.0.5359.125'
+      UAClientHintFullVersionList_1_Brand        : 'Opera'
+      UAClientHintFullVersionList_1_Version      : '108.0.5359.125'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'Linux'
+      UAClientHintPlatformVersion                : '5.15.0'
+      UAClientHintWow64                          : 'false'
+
+
+# Opera with the full (non-reduced) useragent ( = non-standard setting)
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36 OPR/100.0.4815.54'
+      Sec-Ch-Ua                                  : '"Not.A/Brand";v="8", "Chromium";v="114", "Opera";v="100"'
+      Sec-Ch-Ua-Arch                             : '"x86"'
+      Sec-Ch-Ua-Bitness                          : '"64"'
+      Sec-Ch-Ua-Full-Version                     : '"100.0.4815.54"'
+      Sec-Ch-Ua-Full-Version-List                : '"Not.A/Brand";v="8.0.0.0", "Chromium";v="114.0.5735.199", "Opera";v="100.0.4815.54"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Model                            : '""'
+      Sec-Ch-Ua-Platform                         : '"Linux"'
+      Sec-Ch-Ua-Platform-Version                 : '"5.15.0"'
+      Sec-Ch-Ua-Wow64                            : '?0'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Linux Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Linux'
+      OperatingSystemVersion                     : '5.15.0'
+      OperatingSystemVersionMajor                : '5'
+      OperatingSystemNameVersion                 : 'Linux 5.15.0'
+      OperatingSystemNameVersionMajor            : 'Linux 5'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '114.0'
+      LayoutEngineVersionMajor                   : '114'
+      LayoutEngineNameVersion                    : 'Blink 114.0'
+      LayoutEngineNameVersionMajor               : 'Blink 114'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera'
+      AgentVersion                               : '100.0.4815.54'
+      AgentVersionMajor                          : '100'
+      AgentNameVersion                           : 'Opera 100.0.4815.54'
+      AgentNameVersionMajor                      : 'Opera 100'
+
+      UAClientHintArchitecture                   : 'x86'
+      UAClientHintBitness                        : '64'
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '114'
+      UAClientHintBrands_1_Brand                 : 'Opera'
+      UAClientHintBrands_1_Version               : '100'
+      UAClientHintFullVersion                    : '100.0.4815.54'
+      UAClientHintFullVersionList_0_Brand        : 'Chromium'
+      UAClientHintFullVersionList_0_Version      : '114.0.5735.199'
+      UAClientHintFullVersionList_1_Brand        : 'Opera'
+      UAClientHintFullVersionList_1_Version      : '100.0.4815.54'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'Linux'
+      UAClientHintPlatformVersion                : '5.15.0'
+      UAClientHintWow64                          : 'false'
+
+
+# Opera with the default (reduced) User-Agent
+# Note we now DO pick the version from the Client Hints as it is correct now (version >= 98)
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0'
+      Sec-Ch-Ua                                  : '"Not.A/Brand";v="8", "Chromium";v="114", "Opera";v="100"'
+      Sec-Ch-Ua-Arch                             : '"x86"'
+      Sec-Ch-Ua-Bitness                          : '"64"'
+      Sec-Ch-Ua-Full-Version                     : '"100.0.4815.54"'
+      Sec-Ch-Ua-Full-Version-List                : '"Not.A/Brand";v="8.0.0.0", "Chromium";v="114.0.5735.199", "Opera";v="100.0.4815.54"'
+      Sec-Ch-Ua-Mobile                           : '?0'
+      Sec-Ch-Ua-Model                            : '""'
+      Sec-Ch-Ua-Platform                         : '"Linux"'
+      Sec-Ch-Ua-Platform-Version                 : '"5.15.0"'
+      Sec-Ch-Ua-Wow64                            : '?0'
+    expected:
+      DeviceClass                                : 'Desktop'
+      DeviceName                                 : 'Linux Desktop'
+      DeviceBrand                                : 'Unknown'
+      DeviceCpu                                  : 'Intel x86_64'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Desktop'
+      OperatingSystemName                        : 'Linux'
+      OperatingSystemVersion                     : '5.15.0'
+      OperatingSystemVersionMajor                : '5'
+      OperatingSystemNameVersion                 : 'Linux 5.15.0'
+      OperatingSystemNameVersionMajor            : 'Linux 5'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '114.0'
+      LayoutEngineVersionMajor                   : '114'
+      LayoutEngineNameVersion                    : 'Blink 114.0'
+      LayoutEngineNameVersionMajor               : 'Blink 114'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera'
+      AgentVersion                               : '100.0.4815.54'
+      AgentVersionMajor                          : '100'
+      AgentNameVersion                           : 'Opera 100.0.4815.54'
+      AgentNameVersionMajor                      : 'Opera 100'
+      UAClientHintArchitecture                   : 'x86'
+      UAClientHintBitness                        : '64'
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '114'
+      UAClientHintBrands_1_Brand                 : 'Opera'
+      UAClientHintBrands_1_Version               : '100'
+      UAClientHintFullVersion                    : '100.0.4815.54'
+      UAClientHintFullVersionList_0_Brand        : 'Chromium'
+      UAClientHintFullVersionList_0_Version      : '114.0.5735.199'
+      UAClientHintFullVersionList_1_Brand        : 'Opera'
+      UAClientHintFullVersionList_1_Version      : '100.0.4815.54'
+      UAClientHintMobile                         : 'false'
+      UAClientHintPlatform                       : 'Linux'
+      UAClientHintPlatformVersion                : '5.15.0'
+      UAClientHintWow64                          : 'false'
+
+
+# Opera Mini 71 on Android 11
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (Linux; U; Android 11; Nokia 7.2 Build/RKQ1.210607.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.227 Mobile Safari/537.36 OPR/71.0.2254.67050'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Nokia 7.2'
+      DeviceBrand                          : 'Nokia'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Android'
+      OperatingSystemVersion               : '11'
+      OperatingSystemVersionMajor          : '11'
+      OperatingSystemNameVersion           : 'Android 11'
+      OperatingSystemNameVersionMajor      : 'Android 11'
+      OperatingSystemVersionBuild          : 'RKQ1.210607.001'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'Blink'
+      LayoutEngineVersion                  : '114.0'
+      LayoutEngineVersionMajor             : '114'
+      LayoutEngineNameVersion              : 'Blink 114.0'
+      LayoutEngineNameVersionMajor         : 'Blink 114'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Opera Mini'
+      AgentVersion                         : '71.0.2254.67050'
+      AgentVersionMajor                    : '71'
+      AgentNameVersion                     : 'Opera Mini 71.0.2254.67050'
+      AgentNameVersionMajor                : 'Opera Mini 71'
+      AgentSecurity                        : 'Strong security'
+
+
+# Opera on iOS reports itself as "OPT" --> "Opera Touch"
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1 OPT/4.1.1'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '16.6'
+      OperatingSystemVersionMajor          : '16'
+      OperatingSystemNameVersion           : 'iOS 16.6'
+      OperatingSystemNameVersionMajor      : 'iOS 16'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'                 #    12100
+      AgentName                            : 'Opera Touch'             #    12100           | FAILED; Should be 'OPT'
+      AgentVersion                         : '4.1.1'                   #    12100
+      AgentVersionMajor                    : '4'                       #    12100
+      AgentNameVersion                     : 'Opera Touch 4.1.1'       #    12100           | FAILED; Should be 'OPT 4.1.1'
+      AgentNameVersionMajor                : 'Opera Touch 4'           #    12100           | FAILED; Should be 'OPT 4'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 OPT/2.6.1'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '13.5.1'
+      OperatingSystemVersionMajor          : '13'
+      OperatingSystemNameVersion           : 'iOS 13.5.1'
+      OperatingSystemNameVersionMajor      : 'iOS 13'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Opera Touch'
+      AgentVersion                         : '2.6.1'
+      AgentVersionMajor                    : '2'
+      AgentNameVersion                     : 'Opera Touch 2.6.1'
+      AgentNameVersionMajor                : 'Opera Touch 2'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 OPT/3.2.17'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '15.6'
+      OperatingSystemVersionMajor          : '15'
+      OperatingSystemNameVersion           : 'iOS 15.6'
+      OperatingSystemNameVersionMajor      : 'iOS 15'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Opera Touch'
+      AgentVersion                         : '3.2.17'
+      AgentVersionMajor                    : '3'
+      AgentNameVersion                     : 'Opera Touch 3.2.17'
+      AgentNameVersionMajor                : 'Opera Touch 3'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Mobile/15E148 Safari/604.1 OPT/3.2.11'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '15.2'
+      OperatingSystemVersionMajor          : '15'
+      OperatingSystemNameVersion           : 'iOS 15.2'
+      OperatingSystemNameVersionMajor      : 'iOS 15'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Opera Touch'
+      AgentVersion                         : '3.2.11'
+      AgentVersionMajor                    : '3'
+      AgentNameVersion                     : 'Opera Touch 3.2.11'
+      AgentNameVersionMajor                : 'Opera Touch 3'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) OPT/2.2.0 Mobile/15E148'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '14.6'
+      OperatingSystemVersionMajor          : '14'
+      OperatingSystemNameVersion           : 'iOS 14.6'
+      OperatingSystemNameVersionMajor      : 'iOS 14'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Opera Touch'
+      AgentVersion                         : '2.2.0'
+      AgentVersionMajor                    : '2'
+      AgentNameVersion                     : 'Opera Touch 2.2.0'
+      AgentNameVersionMajor                : 'Opera Touch 2'
+
+
+- test:
+    input:
+      User-Agent                                 : 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Mobile Safari/537.36'
+      Sec-Ch-Ua                                  : '" Not A;Brand";v="99", "Chromium";v="104", "Opera";v="90"'
+      Sec-Ch-Ua-Arch                             : '""'
+      Sec-Ch-Ua-Bitness                          : '"64"'
+      Sec-Ch-Ua-Full-Version                     : '"104.0.5112.102"'
+      Sec-Ch-Ua-Full-Version-List                : '"Chromium";v="104.0.5112.102", " Not A;Brand";v="99.0.0.0", "Opera";v="104.0.5112.102"'
+      Sec-Ch-Ua-Mobile                           : '?1'
+      Sec-Ch-Ua-Model                            : '"Nexus 5"'
+      Sec-Ch-Ua-Platform                         : '"Android"'
+      Sec-Ch-Ua-Platform-Version                 : '"6.0"'
+      Sec-Ch-Ua-Wow64                            : '?0'
+    expected:
+      DeviceClass                                : 'Phone'
+      DeviceName                                 : 'Google Nexus 5'
+      DeviceBrand                                : 'Google'
+      DeviceCpuBits                              : '64'
+      OperatingSystemClass                       : 'Mobile'
+      OperatingSystemName                        : 'Android'
+      OperatingSystemVersion                     : '6.0'
+      OperatingSystemVersionMajor                : '6'
+      OperatingSystemNameVersion                 : 'Android 6.0'
+      OperatingSystemNameVersionMajor            : 'Android 6'
+      OperatingSystemVersionBuild                : 'MRA58N'
+      LayoutEngineClass                          : 'Browser'
+      LayoutEngineName                           : 'Blink'
+      LayoutEngineVersion                        : '104.0'
+      LayoutEngineVersionMajor                   : '104'
+      LayoutEngineNameVersion                    : 'Blink 104.0'
+      LayoutEngineNameVersionMajor               : 'Blink 104'
+      AgentClass                                 : 'Browser'
+      AgentName                                  : 'Opera'
+      AgentVersion                               : '104.0.5112.102' # The best guess version. NO Opera in the UA and in the CH we see 2 versions: '90' and '104.0.5112.102'
+      AgentVersionMajor                          : '104'
+      AgentNameVersion                           : 'Opera 104.0.5112.102'
+      AgentNameVersionMajor                      : 'Opera 104'
+
+      UAClientHintBitness                        : '64'
+      UAClientHintBrands_0_Brand                 : 'Chromium'
+      UAClientHintBrands_0_Version               : '104'
+      UAClientHintBrands_1_Brand                 : 'Opera'
+      UAClientHintBrands_1_Version               : '90'
+      UAClientHintFullVersion                    : '104.0.5112.102'
+      UAClientHintFullVersionList_0_Brand        : 'Chromium'
+      UAClientHintFullVersionList_0_Version      : '104.0.5112.102'
+      UAClientHintFullVersionList_1_Brand        : 'Opera'
+      UAClientHintFullVersionList_1_Version      : '104.0.5112.102'
+      UAClientHintMobile                         : 'true'
+      UAClientHintModel                          : 'Nexus 5'
+      UAClientHintPlatform                       : 'Android'
+      UAClientHintPlatformVersion                : '6.0'
       UAClientHintWow64                          : 'false'

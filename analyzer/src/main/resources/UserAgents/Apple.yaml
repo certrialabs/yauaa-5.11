@@ -48,7 +48,6 @@ config:
     - 'DeviceVersion                       :      140 :LookUp[AppleDeviceVersion;@AppleTag]'
     - 'OperatingSystemClass                :      140 :"Mobile"'
     - 'OperatingSystemName                 :      140 :"iOS"'
-    - 'OperatingSystemVersion              :      140 :"<<<null>>>"'
 
 - matcher:
     variable:
@@ -60,7 +59,6 @@ config:
     - 'DeviceVersion                       :      140 :LookUp[AppleDeviceVersion;@AppleTag]'
     - 'OperatingSystemClass                :      140 :"Mobile"'
     - 'OperatingSystemName                 :      140 :"iOS"'
-    - 'OperatingSystemVersion              :      140 :"<<<null>>>"'
 
 - matcher:
     variable:
@@ -72,7 +70,6 @@ config:
     - 'DeviceVersion                       :      141 :LookUp[AppleDeviceVersion;@AppleTag]'
     - 'OperatingSystemClass                :      141 :"Mobile"'
     - 'OperatingSystemName                 :      141 :"iOS"'
-    - 'OperatingSystemVersion              :      141 :"<<<null>>>"'
 
 - matcher:
     require:
@@ -1842,3 +1839,155 @@ config:
       WebviewAppVersionMajor               : '??'
       WebviewAppNameVersion                : 'Unknown Webview App ??'
       WebviewAppNameVersionMajor           : 'Unknown Webview App ??'
+
+
+# icab mobile --> Agent does not include indicators to report this
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Safari/605.1.15'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Apple Macintosh'
+      DeviceBrand                          : 'Apple'
+      DeviceCpu                            : 'Intel'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Mac OS'
+      OperatingSystemVersion               : '>=10.15.7'
+      OperatingSystemVersionMajor          : '>=10.15'
+      OperatingSystemNameVersion           : 'Mac OS >=10.15.7'
+      OperatingSystemNameVersionMajor      : 'Mac OS >=10.15'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Safari'
+      AgentVersion                         : '16.3'
+      AgentVersionMajor                    : '16'
+      AgentNameVersion                     : 'Safari 16.3'
+      AgentNameVersionMajor                : 'Safari 16'
+
+# Firefox focus
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/116 Mobile/15E148 Version/15.0'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '16.6'
+      OperatingSystemVersionMajor          : '16'
+      OperatingSystemNameVersion           : 'iOS 16.6'
+      OperatingSystemNameVersionMajor      : 'iOS 16'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Firefox'
+      AgentVersion                         : '116'
+      AgentVersionMajor                    : '116'
+      AgentNameVersion                     : 'Firefox 116'
+      AgentNameVersionMajor                : 'Firefox 116'
+
+
+# Brave --> Agent does not include indicators to report this
+# TODO: The "Safari" gets a strange version because the "Version/" is missing. Perhaps drop this bad version?
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari/605.1.15'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '16.6'
+      OperatingSystemVersionMajor          : '16'
+      OperatingSystemNameVersion           : 'iOS 16.6'
+      OperatingSystemNameVersionMajor      : 'iOS 16'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Safari'
+      AgentVersion                         : '605.1.15'
+      AgentVersionMajor                    : '605'
+      AgentNameVersion                     : 'Safari 605.1.15'
+      AgentNameVersionMajor                : 'Safari 605'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Mobile/15E148 Safari/604.1'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '15E148'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '16.1'
+      OperatingSystemVersionMajor          : '16'
+      OperatingSystemNameVersion           : 'iOS 16.1'
+      OperatingSystemNameVersionMajor      : 'iOS 16'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Safari'
+      AgentVersion                         : '16.1'
+      AgentVersionMajor                    : '16'
+      AgentNameVersion                     : 'Safari 16.1'
+      AgentNameVersionMajor                : 'Safari 16'
+
+
+
+# The LBANK app makes a total mess of things.
+# Completely unsure about most of the last part.
+# Only making sure we extract the iOS 16.0 from the first comment.
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) _LBANK_LBANK/iOS/5.0.1/iPhone 12/16.0/2_LBANK_'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '16.0'
+      OperatingSystemVersionMajor          : '16'
+      OperatingSystemNameVersion           : 'iOS 16.0'
+      OperatingSystemNameVersionMajor      : 'iOS 16'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '605.1.15'
+      LayoutEngineVersionMajor             : '605'
+      LayoutEngineNameVersion              : 'AppleWebKit 605.1.15'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 605'
+      AgentClass                           : 'Browser'
+      AgentName                            : '_LBANK_LBANK'
+      AgentVersion                         : 'iOS'
+      AgentVersionMajor                    : 'iOS'
+      AgentNameVersion                     : '_LBANK_LBANK iOS'
+      AgentNameVersionMajor                : '_LBANK_LBANK iOS'
+

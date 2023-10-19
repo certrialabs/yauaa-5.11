@@ -23,10 +23,11 @@
   <artifactId>yauaa-parent</artifactId>
   <packaging>pom</packaging>
   <groupId>nl.basjes.parse.useragent</groupId>
-  <version>7.20.1-SNAPSHOT</version>
+  <version>7.22.1-SNAPSHOT</version>
 
   <name>Yauaa : </name>
   <description>A parsing and analyzing library to get information from a useragent string.</description>
+  <inceptionYear>2013</inceptionYear>
 
   <url>https://yauaa.basjes.nl</url>
 
@@ -42,11 +43,11 @@
     <!-- In order for everything to work correctly we need at least this version of maven. -->
     <maven.minimal.version>3.5.2</maven.minimal.version>
 
-    <antlr.version>4.13.0</antlr.version>
-    <snakeyaml.version>2.0</snakeyaml.version>
+    <antlr.version>4.13.1</antlr.version>
+    <snakeyaml.version>2.2</snakeyaml.version>
 
     <!-- Needed to make the build reproducible https://reproducible-builds.org/ -->
-    <project.build.outputTimestamp>2023-06-03T15:06:26Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-08-06T14:13:33Z</project.build.outputTimestamp>
 
     <!-- ============================================== -->
     <!-- ================ UDF Versions ================ -->
@@ -56,7 +57,7 @@
     <flink-connector-elasticsearch7.version>3.0.1-1.17</flink-connector-elasticsearch7.version>
 
     <!-- Apache Beam -->
-    <beam.version>2.49.0</beam.version>
+    <beam.version>2.51.0</beam.version>
     <hamcrest-all.version>1.3</hamcrest-all.version>
 
     <!-- Apache Drill -->
@@ -70,42 +71,42 @@
     <hive.version>3.1.3</hive.version>
 
     <!-- Apache Nifi -->
-    <nifi.version>1.22.0</nifi.version>
+    <nifi.version>1.23.2</nifi.version>
     <nifi-nar-maven-plugin.version>1.5.1</nifi-nar-maven-plugin.version>
 
     <!-- LogParser -->
     <logparser.version>5.10.0</logparser.version>
 
     <!-- Elastic tools 7.x series -->
-    <elastic-7.version>7.17.11</elastic-7.version>
+    <elastic-7.version>7.17.14</elastic-7.version>
     <elasticsearch-7.version>${elastic-7.version}</elasticsearch-7.version>
 
     <!-- Elastic tools 8.x series -->
-    <elastic-8.version>8.8.2</elastic-8.version>
+    <elastic-8.version>8.10.4</elastic-8.version>
     <elasticsearch-8.version>${elastic-8.version}</elasticsearch-8.version>
 
     <!-- Trino (a.k.a. Presto SQL)-->
-    <trino.version>422</trino.version>
+    <trino.version>429</trino.version>
 
     <!-- ============================================== -->
 
-    <dependency-check-maven.version>8.3.1</dependency-check-maven.version>
+    <dependency-check-maven.version>8.4.0</dependency-check-maven.version>
     <dependency-convergence.phase>validate</dependency-convergence.phase>
     <maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
-    <checkstyle.version>10.12.1</checkstyle.version>
-    <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
-    <spotbugs.version>4.7.3</spotbugs.version>
+    <checkstyle.version>10.12.4</checkstyle.version>
+    <spotbugs-maven-plugin.version>4.7.3.6</spotbugs-maven-plugin.version>
+    <spotbugs.version>4.8.0</spotbugs.version>
     <slf4j1.version>1.7.36</slf4j1.version>
-    <slf4j2.version>2.0.7</slf4j2.version>
-    <log4j2.version>2.20.0</log4j2.version>
+    <slf4j2.version>2.0.9</slf4j2.version>
+    <log4j2.version>2.21.0</log4j2.version>
     <kryo4.version>4.0.2</kryo4.version>  <!--  DO NOT UPGRADE: We test with Kryo 4.x.x to ensure backwards compatibility. -->
     <kryo5.version>5.5.0</kryo5.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <apache-rat-plugin.version>0.15</apache-rat-plugin.version>
-    <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
-    <junit5.version>5.9.3</junit5.version>
+    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+    <junit5.version>5.10.0</junit5.version>
     <hamcrest-core.version>2.2</hamcrest-core.version>
-    <lombok.version>1.18.28</lombok.version>
+    <lombok.version>1.18.30</lombok.version>
 
     <jackson.version>2.15.2</jackson.version>
 
@@ -125,22 +126,22 @@
 
     <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-    <maven-artifact-plugin.version>3.4.1</maven-artifact-plugin.version>
+    <maven-artifact-plugin.version>3.5.0</maven-artifact-plugin.version>
     <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
     <maven-clean-plugin.version>3.3.1</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
-    <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
+    <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
     <maven-invoker-plugin.version>3.6.0</maven-invoker-plugin.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
     <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-scm-plugin.version>2.0.1</maven-scm-plugin.version>
-    <maven-shade-plugin.version>3.5.0</maven-shade-plugin.version>
+    <maven-shade-plugin.version>3.5.1</maven-shade-plugin.version>
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
@@ -156,18 +157,18 @@
 
     <cyclonedx-maven-plugin.version>2.7.9</cyclonedx-maven-plugin.version>
 
-    <docker-maven-plugin.version>0.43.0</docker-maven-plugin.version>
+    <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
 
-    <spring-boot.version>3.1.1</spring-boot.version>
+    <spring-boot.version>3.1.4</spring-boot.version>
     <spring-boot-legacy.version>2.1.0.RELEASE</spring-boot-legacy.version>
 
-    <springdoc.version>1.7.0</springdoc.version>
+    <springdoc.version>2.2.0</springdoc.version>
 
     <!-- See http://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html-->
     <jacoco.surefireArgLine />
     <argLine>@{jacoco.surefireArgLine} -Xmx2048m</argLine>
 
-    <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
+    <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
     <sonar.language>java</sonar.language>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
@@ -333,6 +334,7 @@
         <invoker.skip>true</invoker.skip>
         <cyclonedx.skip>true</cyclonedx.skip>
         <gpg.skip>true</gpg.skip>
+        <maven.build.cache.skipCache>true</maven.build.cache.skipCache>
       </properties>
     </profile>
 
@@ -776,7 +778,7 @@
           <dependency>
             <groupId>nl.basjes.maven.release</groupId>
             <artifactId>conventional-commits-version-policy</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
           </dependency>
         </dependencies>
         <configuration>

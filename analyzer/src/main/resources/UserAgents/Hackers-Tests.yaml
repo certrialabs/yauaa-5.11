@@ -14,6 +14,60 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+isFakeCPUArchitecture: &isFakeCPUArchitecture
+  DeviceClass                          : 'Hacker'
+  DeviceName                           : 'Hacker'
+  DeviceBrand                          : 'Hacker'
+  DeviceVersion                        : 'Hacker'
+  OperatingSystemClass                 : 'Hacker'
+  OperatingSystemName                  : 'Hacker'
+  OperatingSystemVersion               : 'Hacker'
+  OperatingSystemVersionMajor          : 'Hacker'
+  OperatingSystemNameVersion           : 'Hacker'
+  OperatingSystemNameVersionMajor      : 'Hacker'
+  LayoutEngineClass                    : 'Hacker'
+  LayoutEngineName                     : 'Hacker'
+  LayoutEngineVersion                  : 'Hacker'
+  LayoutEngineVersionMajor             : 'Hacker'
+  LayoutEngineNameVersion              : 'Hacker'
+  LayoutEngineNameVersionMajor         : 'Hacker'
+  AgentClass                           : 'Hacker'
+  AgentName                            : 'Hacker'
+  AgentVersion                         : 'Hacker'
+  AgentVersionMajor                    : 'Hacker'
+  AgentNameVersion                     : 'Hacker'
+  AgentNameVersionMajor                : 'Hacker'
+  RemarkablePattern                    : 'Fake CPU Architecture'
+
+isHackerUnknown: &isHackerUnknown
+      DeviceClass                          : 'Hacker'
+      DeviceName                           : 'Hacker'
+      DeviceBrand                          : 'Hacker'
+      DeviceVersion                        : 'Hacker'
+      OperatingSystemClass                 : 'Hacker'
+      OperatingSystemName                  : 'Hacker'
+      OperatingSystemVersion               : 'Hacker'
+      OperatingSystemVersionMajor          : 'Hacker'
+      OperatingSystemNameVersion           : 'Hacker'
+      OperatingSystemNameVersionMajor      : 'Hacker'
+      LayoutEngineClass                    : 'Hacker'
+      LayoutEngineName                     : 'Hacker'
+      LayoutEngineVersion                  : 'Hacker'
+      LayoutEngineVersionMajor             : 'Hacker'
+      LayoutEngineNameVersion              : 'Hacker'
+      LayoutEngineNameVersionMajor         : 'Hacker'
+      AgentClass                           : 'Hacker'
+      AgentName                            : 'Hacker'
+      AgentVersion                         : 'Hacker'
+      AgentVersionMajor                    : 'Hacker'
+      AgentNameVersion                     : 'Hacker'
+      AgentNameVersionMajor                : 'Hacker'
+      HackerAttackVector                   : 'Unknown'
+      HackerToolkit                        : 'Unknown'
+      RemarkablePattern                    : 'Hacker'
+
+
 config:
 
 - test:
@@ -231,63 +285,13 @@ config:
 - test:
     input:
       user_agent_string: 'a {'
-    expected:
-      DeviceClass                          : 'Hacker'
-      DeviceName                           : 'Hacker'
-      DeviceBrand                          : 'Hacker'
-      DeviceVersion                        : 'Hacker'
-      OperatingSystemClass                 : 'Hacker'
-      OperatingSystemName                  : 'Hacker'
-      OperatingSystemVersion               : 'Hacker'
-      OperatingSystemVersionMajor          : 'Hacker'
-      OperatingSystemNameVersion           : 'Hacker'
-      OperatingSystemNameVersionMajor      : 'Hacker'
-      LayoutEngineClass                    : 'Hacker'
-      LayoutEngineName                     : 'Hacker'
-      LayoutEngineVersion                  : 'Hacker'
-      LayoutEngineVersionMajor             : 'Hacker'
-      LayoutEngineNameVersion              : 'Hacker'
-      LayoutEngineNameVersionMajor         : 'Hacker'
-      AgentClass                           : 'Hacker'
-      AgentName                            : 'Hacker'
-      AgentVersion                         : 'Hacker'
-      AgentVersionMajor                    : 'Hacker'
-      AgentNameVersion                     : 'Hacker'
-      AgentNameVersionMajor                : 'Hacker'
-      HackerAttackVector                   : 'Unknown'
-      HackerToolkit                        : 'Unknown'
-      RemarkablePattern                    : 'Hacker'
+    expected: *isHackerUnknown
 
 # Completely empty --> must be hacker.
 - test:
     input:
       user_agent_string: ''
-    expected:
-      DeviceClass                          : 'Hacker'
-      DeviceName                           : 'Hacker'
-      DeviceBrand                          : 'Hacker'
-      DeviceVersion                        : 'Hacker'
-      OperatingSystemClass                 : 'Hacker'
-      OperatingSystemName                  : 'Hacker'
-      OperatingSystemVersion               : 'Hacker'
-      OperatingSystemVersionMajor          : 'Hacker'
-      OperatingSystemNameVersion           : 'Hacker'
-      OperatingSystemNameVersionMajor      : 'Hacker'
-      LayoutEngineClass                    : 'Hacker'
-      LayoutEngineName                     : 'Hacker'
-      LayoutEngineVersion                  : 'Hacker'
-      LayoutEngineVersionMajor             : 'Hacker'
-      LayoutEngineNameVersion              : 'Hacker'
-      LayoutEngineNameVersionMajor         : 'Hacker'
-      AgentClass                           : 'Hacker'
-      AgentName                            : 'Hacker'
-      AgentVersion                         : 'Hacker'
-      AgentVersionMajor                    : 'Hacker'
-      AgentNameVersion                     : 'Hacker'
-      AgentNameVersionMajor                : 'Hacker'
-      HackerAttackVector                   : 'Unknown'
-      HackerToolkit                        : 'Unknown'
-      RemarkablePattern                    : 'Hacker'
+    expected: *isHackerUnknown
 
 - test:
     input:
@@ -323,32 +327,7 @@ config:
 - test:
     input:
       user_agent_string: '${9999072+10000055}'
-    expected:
-      DeviceClass                          : 'Hacker'
-      DeviceName                           : 'Hacker'
-      DeviceBrand                          : 'Hacker'
-      DeviceVersion                        : 'Hacker'
-      OperatingSystemClass                 : 'Hacker'
-      OperatingSystemName                  : 'Hacker'
-      OperatingSystemVersion               : 'Hacker'
-      OperatingSystemVersionMajor          : 'Hacker'
-      OperatingSystemNameVersion           : 'Hacker'
-      OperatingSystemNameVersionMajor      : 'Hacker'
-      LayoutEngineClass                    : 'Hacker'
-      LayoutEngineName                     : 'Hacker'
-      LayoutEngineVersion                  : 'Hacker'
-      LayoutEngineVersionMajor             : 'Hacker'
-      LayoutEngineNameVersion              : 'Hacker'
-      LayoutEngineNameVersionMajor         : 'Hacker'
-      AgentClass                           : 'Hacker'
-      AgentName                            : 'Hacker'
-      AgentVersion                         : 'Hacker'
-      AgentVersionMajor                    : 'Hacker'
-      AgentNameVersion                     : 'Hacker'
-      AgentNameVersionMajor                : 'Hacker'
-      HackerAttackVector                   : 'Unknown'
-      HackerToolkit                        : 'Unknown'
-      RemarkablePattern                    : 'Hacker'
+    expected: *isHackerUnknown
 
 
 - test:
@@ -549,8 +528,8 @@ config:
       user_agent_string: 'ServiceUptime.robot'
     expected:
       DeviceClass                          : 'Robot'
-      DeviceName                           : 'ServiceUptime.robot'
-      DeviceBrand                          : 'Unknown'
+      DeviceName                           : 'ServiceUptime .robot'
+      DeviceBrand                          : 'ServiceUptime'
       OperatingSystemClass                 : 'Cloud'
       OperatingSystemName                  : 'Cloud'
       OperatingSystemVersion               : '??'
@@ -659,3 +638,45 @@ config:
       AgentNameVersion                     : 'Hacker'
       AgentNameVersionMajor                : 'Hacker'
       RemarkablePattern                    : 'Hacker'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (X11; Linux x187_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31'
+    expected: *isFakeCPUArchitecture
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (X11; Linux x188_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31'
+    expected: *isFakeCPUArchitecture
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (X11; Linux x189_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31'
+    expected: *isFakeCPUArchitecture
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (X11; Linux x190_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31'
+    expected: *isFakeCPUArchitecture
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (X11; Linux x191_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31'
+    expected: *isFakeCPUArchitecture
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (X11; Linux x192_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31'
+    expected: *isFakeCPUArchitecture
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (X11; Linux x193_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31'
+    expected: *isFakeCPUArchitecture
+
+# Yes, they put some of the client hints in the useragent field ...
+- test:
+    input:
+      User-Agent                           : 'Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90'
+    expected: *isHackerUnknown

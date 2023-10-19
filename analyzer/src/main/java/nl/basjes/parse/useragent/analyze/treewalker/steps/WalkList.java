@@ -109,6 +109,7 @@ import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -281,7 +282,7 @@ public class WalkList implements Serializable {
         return sb.toString();
     }
 
-    private class WalkListBuilder extends UserAgentTreeWalkerBaseVisitor<Void> {
+    private final class WalkListBuilder extends UserAgentTreeWalkerBaseVisitor<Void> {
 
         // Because we are jumping in 'mid way' we need to skip creating steps until that point.
         boolean foundHashEntryPoint = false;
@@ -317,6 +318,27 @@ public class WalkList implements Serializable {
                 return null;
             }
             return token.getText();
+        }
+
+        private Map<String, String> getLookup(String lookupName) {
+            Map<String, String> lookup = lookups.get(lookupName);
+            if (lookup == null) {
+                throw new InvalidParserConfigurationException("Missing lookup \"" + lookupName + "\" ");
+            }
+            return lookup;
+        }
+
+        private Set<String> getLookupSet(String lookupSetName) {
+            Map<String, String> lookup = lookups.get(lookupSetName);
+            if (lookup != null) {
+                // The "new HashSet" is avoid serialization problems with Kryo
+                return new HashSet<>(lookup.keySet());
+            }
+            Set<String> lookupSet = lookupSets.get(lookupSetName);
+            if (lookupSet != null) {
+                return lookupSet;
+            }
+            throw new InvalidParserConfigurationException("Missing lookup/lookupSet \"" + lookupSetName + "\" ");
         }
 
         @Override
@@ -380,9 +402,9 @@ public class WalkList implements Serializable {
             fromHereItCannotBeInHashMapAnymore();
 
             String lookupName = ctx.lookup.getText();
-            Map<String, String> lookup = getLookup(lookupName);
+            Set<String> lookupSet = getLookupSet(lookupName);
 
-            add(new StepIsInLookupContains(lookupName, lookup));
+            add(new StepIsInLookupContains(lookupName, lookupSet));
             return null; // Void
         }
 
@@ -394,9 +416,9 @@ public class WalkList implements Serializable {
             fromHereItCannotBeInHashMapAnymore();
 
             String lookupName = ctx.lookup.getText();
-            Map<String, String> lookup = getLookup(lookupName);
+            Set<String> lookupSet = getLookupSet(lookupName);
 
-            add(new StepIsNotInLookupContains(lookupName, lookup));
+            add(new StepIsNotInLookupContains(lookupName, lookupSet));
             return null; // Void
         }
 
@@ -433,14 +455,6 @@ public class WalkList implements Serializable {
             steps.add(new StepDefaultIfNull(ctx.defaultValue.getText()));
             visit(ctx.matcher());
             return null; // Void
-        }
-
-        private Map<String, String> getLookup(String lookupName) {
-            Map<String, String> lookup = lookups.get(lookupName);
-            if (lookup == null) {
-                throw new InvalidParserConfigurationException("Missing lookup \"" + lookupName + "\" ");
-            }
-            return lookup;
         }
 
         @Override
@@ -658,20 +672,6 @@ public class WalkList implements Serializable {
             add(new StepIsNotInSet(lookupSetName, getLookupSet(lookupSetName)));
             visitNext(ctx.nextStep);
             return null; // Void
-        }
-
-        private Set<String> getLookupSet(String lookupSetName) {
-            Set<String> lookupSet = lookupSets.get(lookupSetName);
-            if (lookupSet == null) {
-                Map<String, String> lookup = lookups.get(lookupSetName);
-                if (lookup != null) {
-                    lookupSet = new LinkedHashSet<>(lookup.keySet());
-                }
-            }
-            if (lookupSet == null) {
-                throw new InvalidParserConfigurationException("Missing lookupSet \"" + lookupSetName + "\" ");
-            }
-            return lookupSet;
         }
 
         @Override

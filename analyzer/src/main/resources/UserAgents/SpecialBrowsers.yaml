@@ -21,6 +21,7 @@ config:
     name: 'NamedSpecials'
     values:
     - 'IntelliJ IDEA'
+    - 'Intellij IDEA Github Plugin'
 
 - set:
     name: 'UnwantedSpecials'
@@ -488,6 +489,34 @@ config:
       AgentVersionMajor                    : '??'
       AgentNameVersion                     : 'IntelliJ IDEA ??'
       AgentNameVersionMajor                : 'IntelliJ IDEA ??'
+
+
+# Fetches /api/v3/meta from my gitlab instance.
+- test:
+    input:
+      user_agent_string                    : 'Intellij IDEA Github Plugin'
+    expected:
+      DeviceClass                          : 'Unknown'
+      DeviceName                           : 'Unknown'
+      DeviceBrand                          : 'Unknown'
+      OperatingSystemClass                 : 'Unknown'
+      OperatingSystemName                  : 'Unknown'
+      OperatingSystemVersion               : '??'
+      OperatingSystemVersionMajor          : '??'
+      OperatingSystemNameVersion           : 'Unknown ??'
+      OperatingSystemNameVersionMajor      : 'Unknown ??'
+      LayoutEngineClass                    : 'Unknown'
+      LayoutEngineName                     : 'Unknown'
+      LayoutEngineVersion                  : '??'
+      LayoutEngineVersionMajor             : '??'
+      LayoutEngineNameVersion              : 'Unknown ??'
+      LayoutEngineNameVersionMajor         : 'Unknown ??'
+      AgentClass                           : 'Special'
+      AgentName                            : 'Intellij IDEA Github Plugin'
+      AgentVersion                         : '??'
+      AgentVersionMajor                    : '??'
+      AgentNameVersion                     : 'Intellij IDEA Github Plugin ??'
+      AgentNameVersionMajor                : 'Intellij IDEA Github Plugin ??'
 
 
 - matcher:
@@ -1118,6 +1147,141 @@ config:
       AgentNameVersionMajor                : 'Dillo 0'
 
 
+- test:
+    input:
+      user_agent_string: 'SAMSUNG-SGH-A867/A867UCHJ3 SHP/VPP/R5 NetFront/35 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1 UP.Link/6.3.0.0.0'
+    expected:
+      DeviceClass                          : 'Mobile'
+      DeviceName                           : 'Samsung SGH-A867'
+      DeviceBrand                          : 'Samsung'
+      DeviceVersion                        : 'A867UCHJ3'
+      OperatingSystemClass                 : 'Unknown'
+      OperatingSystemName                  : 'Unknown'
+      OperatingSystemVersion               : '??'
+      OperatingSystemVersionMajor          : '??'
+      OperatingSystemNameVersion           : 'Unknown ??'
+      OperatingSystemNameVersionMajor      : 'Unknown ??'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'Netfront'
+      LayoutEngineVersion                  : '35'
+      LayoutEngineVersionMajor             : '35'
+      LayoutEngineNameVersion              : 'Netfront 35'
+      LayoutEngineNameVersionMajor         : 'Netfront 35'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Netfront'
+      AgentVersion                         : '35'
+      AgentVersionMajor                    : '35'
+      AgentNameVersion                     : 'Netfront 35'
+      AgentNameVersionMajor                : 'Netfront 35'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (compatible; Konqueror/3.1; OpenBSD)'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'OpenBsd Desktop'
+      DeviceBrand                          : 'Unknown'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'OpenBSD'
+      OperatingSystemVersion               : '??'
+      OperatingSystemVersionMajor          : '??'
+      OperatingSystemNameVersion           : 'OpenBSD ??'
+      OperatingSystemNameVersionMajor      : 'OpenBSD ??'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'KHTML'
+      LayoutEngineVersion                  : '3.1'
+      LayoutEngineVersionMajor             : '3'
+      LayoutEngineNameVersion              : 'KHTML 3.1'
+      LayoutEngineNameVersionMajor         : 'KHTML 3'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Konqueror'
+      AgentVersion                         : '3.1'
+      AgentVersionMajor                    : '3'
+      AgentNameVersion                     : 'Konqueror 3.1'
+      AgentNameVersionMajor                : 'Konqueror 3'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (compatible; Konqueror/3.1; SunOS)'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'SUN Microsystems Desktop'
+      DeviceBrand                          : 'SUN Microsystems'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'SunOS'
+      OperatingSystemVersion               : '??'
+      OperatingSystemVersionMajor          : '??'
+      OperatingSystemNameVersion           : 'SunOS ??'
+      OperatingSystemNameVersionMajor      : 'SunOS ??'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'KHTML'
+      LayoutEngineVersion                  : '3.1'
+      LayoutEngineVersionMajor             : '3'
+      LayoutEngineNameVersion              : 'KHTML 3.1'
+      LayoutEngineNameVersionMajor         : 'KHTML 3'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Konqueror'
+      AgentVersion                         : '3.1'
+      AgentVersionMajor                    : '3'
+      AgentNameVersion                     : 'Konqueror 3.1'
+      AgentNameVersionMajor                : 'Konqueror 3'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (compatible; Konqueror/3.1.3; OpenBSD 3.4)'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'OpenBsd Desktop'
+      DeviceBrand                          : 'Unknown'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'OpenBSD'
+      OperatingSystemVersion               : '3.4'
+      OperatingSystemVersionMajor          : '3'
+      OperatingSystemNameVersion           : 'OpenBSD 3.4'
+      OperatingSystemNameVersionMajor      : 'OpenBSD 3'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'KHTML'
+      LayoutEngineVersion                  : '3.1.3'
+      LayoutEngineVersionMajor             : '3'
+      LayoutEngineNameVersion              : 'KHTML 3.1.3'
+      LayoutEngineNameVersionMajor         : 'KHTML 3'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Konqueror'
+      AgentVersion                         : '3.1.3'
+      AgentVersionMajor                    : '3'
+      AgentNameVersion                     : 'Konqueror 3.1.3'
+      AgentNameVersionMajor                : 'Konqueror 3'
+
+
+- test:
+    input:
+      User-Agent                           : 'Mozilla/5.0 (compatible; Konqueror/3.2; Darwin) (KHTML, like Gecko)'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Unknown'
+      DeviceBrand                          : 'Apple'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Unknown'
+      OperatingSystemVersion               : '??'
+      OperatingSystemVersionMajor          : '??'
+      OperatingSystemNameVersion           : 'Unknown ??'
+      OperatingSystemNameVersionMajor      : 'Unknown ??'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'KHTML'
+      LayoutEngineVersion                  : '3.2'
+      LayoutEngineVersionMajor             : '3'
+      LayoutEngineNameVersion              : 'KHTML 3.2'
+      LayoutEngineNameVersionMajor         : 'KHTML 3'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Konqueror'
+      AgentVersion                         : '3.2'
+      AgentVersionMajor                    : '3'
+      AgentNameVersion                     : 'Konqueror 3.2'
+      AgentNameVersionMajor                : 'Konqueror 3'
+
 # TODO: A lot of special browsers
 
 #DoCoMo    1.0    DoCoMo/1.0/D503iS/c10
@@ -1131,10 +1295,6 @@ config:
 #Mozilla/4.5 (compatible; iCab 2.9.7; Macintosh; U; PPC; Mac OS X)
 #Jakarta Commons-HttpClient/2.0.1
 #Java/1.5.0
-#Mozilla/5.0 (compatible; Konqueror/3.1; OpenBSD)
-#Mozilla/5.0 (compatible; Konqueror/3.1; SunOS)
-#Mozilla/5.0 (compatible; Konqueror/3.1.3; OpenBSD 3.4)
-#Mozilla/5.0 (compatible; Konqueror/3.2; Darwin) (KHTML, like Gecko)
 #
 #Firefox/32.0.3 (x86 en-US); anonymized by Abelssoft 1598848102
 #Firefox/34.0.5 (x86 de); anonymized by Abelssoft 1811190192
@@ -4157,6 +4317,23 @@ config:
     - 'AgentName                           :     2019 : NormalizeBrand[@Agent.name]'
     - 'AgentVersion                        :     2019 : CleanVersion[@AgentVersion]'
 
+
+- matcher:
+    variable:
+    - 'Agent                               :IsNotInLookUpPrefix[UnwantedIEPrefixes;agent.(1)product.(1)comments.entry.product!?UnwantedIENames]'
+    - 'AgentVersion                        :@Agent.version'
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)product.(1)name="MSIE"'
+    - 'IsNull[agent.(1)product.(1)comments.entry.(1)product.(1)name="IEMobile"]'
+    - 'IsNull[@AgentVersion.url]'
+    - 'IsNull[@AgentVersion.uuid]'
+    - 'IsNull[@AgentVersion.key]'
+    - 'IsNull[@AgentVersion.keyvalue]'
+    extract:
+    - 'AgentName                           :     2020 : LookUp[SpecialChromeBrowserNames;@Agent.name]'
+    - 'AgentVersion                        :     2020 : CleanVersion[@AgentVersion]'
+
+
 #- matcher:
 #    variable:
 #    - 'Agent                               :IsNotInLookUpPrefix[UnwantedIEPrefixes;agent.(1)product.(1)comments.entry!?UnwantedIENames]'
@@ -5454,8 +5631,8 @@ config:
       user_agent_string: 'SalesforceMobileSDK/9.1.0 android mobile/11 (Pixel 3 XL) Salesforce1/234.020.0(234020000) Native uid_fcfde120405e320d ftr_ SecurityPatch/2021-10-01 Cordova/8.0.0 auraff/sm Mozilla/5.0 (Linux; Android 11; Pixel 3 XL Build/RQ3A.211001.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.92 Mobile Safari/537.36'
     expected:
       DeviceClass                          : 'Mobile'
-      DeviceName                           : 'Android Mobile'
-      DeviceBrand                          : 'Unknown'
+      DeviceName                           : 'Google Pixel 3 XL'
+      DeviceBrand                          : 'Google'
       OperatingSystemClass                 : 'Mobile'
       OperatingSystemName                  : 'Android'
       OperatingSystemVersion               : '11'
