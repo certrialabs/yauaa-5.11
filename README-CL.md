@@ -21,11 +21,22 @@ The full documentation can be found here [https://yauaa.basjes.nl](https://yauaa
 EMR Compatible Build
 ===========================
 !!!!!! IMPORTANT !!!!!!!
-For building emr compatible udf please checkout cl-emr-fix-20231019 and run
+For building emr compatible udf please follow this steps:
+   - Sync master branch with nielsbasjes/yauaa:main. in github web UI
+   - checkout cl-emr-fix:
+      `git checkout cl-emr-fix`
+   - pull from master:
+      `git pull origin master`
+   - create new branch:
+      `git checkout cl-emr-fix-current-data`
 
-```mvn -Dmaven.test.skip=true -pl :yauaa-hive -am clean package```
+There is a script that builds docker container in which JARS are compiled.
+To run build script in root of repo execute:
+`bash build-cl-yauaa.sh`
 
-Built jar can be found in udfs/hive/target/yauaa-hive-5.11-SNAPSHOT-udf.jar. You can see example usage [here](https://yauaa.basjes.nl/udf/apache-hive/).
+After script completes new jars can be found in udfs/hive/target directory.
+
+Built jar can be found in udfs/hive/target/yauaa-hive-5.11-SNAPSHOT-`udf.jar. You can see example usage [here](https://yauaa.basjes.nl/udf/apache-hive/).
 
 
 
